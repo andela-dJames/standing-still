@@ -42,11 +42,27 @@ public class MainActivity extends AppCompatActivity {
         isRecording = false;
     }
 
-    public void startRecording(View v) {
-        changeIcon();
+    public void record(View v) {
+        if (!isRecording){
+        startRecording();
+        }
+        else {
+            stopRecording();
+        }
 
     }
-    
+
+    public void startRecording() {
+        changeIcon();
+        isRecording = true;
+
+    }
+
+    public void stopRecording() {
+        changeIcon();
+        isRecording = false;
+    }
+
 
     private void changeIcon() {
         if (!isRecording){
