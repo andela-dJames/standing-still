@@ -21,20 +21,18 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        initializeComponents();
 
     }
 
     private void initializeComponents() {
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         hourDisplay = (TextView) findViewById(R.id.hourText);
         minuteDisplay = (TextView) findViewById(R.id.minuteText);
         secondsDisplay = (TextView) findViewById(R.id.secondText);
