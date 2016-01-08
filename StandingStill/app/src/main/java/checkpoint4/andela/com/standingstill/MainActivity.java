@@ -44,23 +44,27 @@ public class MainActivity extends AppCompatActivity {
 
     public void record(View v) {
         if (!isRecording){
-        startRecording();
+        startRecording(v);
         }
         else {
-            stopRecording();
+            stopRecording(v);
         }
 
     }
 
-    public void startRecording() {
+    public void startRecording(View v) {
         changeIcon();
         isRecording = true;
+        Snackbar.make(v, "Recording has started", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
 
     }
 
-    public void stopRecording() {
+    public void stopRecording(View v) {
         changeIcon();
         isRecording = false;
+        Snackbar.make(v, "Recording has stopped", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
 
