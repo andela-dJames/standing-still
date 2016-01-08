@@ -38,18 +38,19 @@ public class MainActivity extends AppCompatActivity {
         hourDisplay = (TextView) findViewById(R.id.hourText);
         minuteDisplay = (TextView) findViewById(R.id.minuteText);
         secondsDisplay = (TextView) findViewById(R.id.secondText);
+
+        isRecording = false;
     }
 
     public void startRecording(View v) {
-
-        isRecording = true;
         changeIcon();
 
     }
 
     private void changeIcon() {
-        if (isRecording){
+        if (!isRecording){
             fab.setImageResource(R.drawable.ic_stop_button);
+            isRecording = true;
         }
     }
 
