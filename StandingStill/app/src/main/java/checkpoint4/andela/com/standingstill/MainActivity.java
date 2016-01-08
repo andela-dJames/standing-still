@@ -8,8 +8,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+
+    protected static final String TAG = "Main Activity";
+
+    private TextView hourDisplay;
+    private TextView minuteDisplay;
+    private TextView secondsDisplay;
+    private boolean isRecording;
+    private FloatingActionButton fab;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +30,28 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+
+    }
+
+    private void initializeComponents() {
+        hourDisplay = (TextView) findViewById(R.id.hourText);
+        minuteDisplay = (TextView) findViewById(R.id.minuteText);
+        secondsDisplay = (TextView) findViewById(R.id.secondText);
+
+        isRecording = false;
+    }
+
+    public void startRecording(View v) {
+        changeIcon();
+
+    }
+
+    private void changeIcon() {
+        if (!isRecording){
+            fab.setImageResource(R.drawable.ic_stop_button);
+            isRecording = true;
+        }
     }
 
     @Override
