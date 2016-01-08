@@ -46,11 +46,15 @@ public class MainActivity extends AppCompatActivity {
         changeIcon();
 
     }
+    
 
     private void changeIcon() {
         if (!isRecording){
             fab.setImageResource(R.drawable.ic_stop_button);
             isRecording = true;
+        }
+        else {
+            fab.setImageResource(R.drawable.ic_stat_name);
         }
     }
 
