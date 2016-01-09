@@ -1,14 +1,20 @@
 package checkpoint4.andela.com.standingstill;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import checkpoint4.andela.com.standingstill.timer.StopWatch;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,10 +23,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView hourDisplay;
     private TextView minuteDisplay;
     private TextView secondsDisplay;
+    private RelativeLayout parent;
     private boolean isRecording;
     private FloatingActionButton fab;
 
+    private StopWatch watch;
 
+    private LocationTimer timer;
 
 
     @Override
@@ -29,28 +38,70 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        initializeComponents();
 
     }
 
     private void initializeComponents() {
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        parent = (RelativeLayout) findViewById(R.id.parent_view);
         hourDisplay = (TextView) findViewById(R.id.hourText);
         minuteDisplay = (TextView) findViewById(R.id.minuteText);
         secondsDisplay = (TextView) findViewById(R.id.secondText);
 
         isRecording = false;
+        watch = new StopWatch();
+    }
+
+    public void record(View v) {
+        if (!isRecording){
+        startRecording(v);
+        }
+        else {
+            stopRecording(v);
+        }
+
     }
 
     public void startRecording(View v) {
         changeIcon();
+        isRecording = true;
+        Snackbar.make(v, "Recording has started", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+        watch.start();
+        timer = new LocationTimer(watch.getStartTime(), 100);
+        timer.start();
 
     }
+
+    public void stopRecording(View v) {
+        changeIcon();
+        isRecording = false;
+        Snackbar.make(v, "Recording has stopped", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+        timer.cancel();
+        long time = watch.getElapsedTime();
+        long userdefined = System.currentTimeMillis();
+        if (userdefined > time){
+            Log.d(TAG, "location not saved");
+        }
+
+        else {
+            Log.d(TAG, "Location Saved");
+        }
+        Log.d(TAG, String.valueOf(watch.getElapsedTime()));
+
+
+    }
+
 
     private void changeIcon() {
         if (!isRecording){
             fab.setImageResource(R.drawable.ic_stop_button);
             isRecording = true;
+        }
+        else {
+            fab.setImageResource(R.drawable.ic_stat_name);
         }
     }
 
@@ -74,5 +125,35 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public class LocationTimer extends CountDownTimer {
+
+        /**
+         * @param millisInFuture    The number of millis in the future from the call
+         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
+         *                          is called.
+         * @param countDownInterval The interval along the way to receive
+         *                          {@link #onTick(long)} callbacks.
+         */
+        public LocationTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            float time = millisUntilFinished;
+            String sec =  watch.secondsToString();
+            String min = watch.minuteToString();
+            String hour = watch.hourToString();
+            secondsDisplay.setText(sec);
+            minuteDisplay.setText(min);
+
+        }
+
+        @Override
+        public void onFinish() {
+
+        }
     }
 }

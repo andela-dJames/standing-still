@@ -2,9 +2,6 @@ package checkpoint4.andela.com.standingstill.timer;
 
 import android.os.Handler;
 
-/**
- * Created by andeladev on 07/01/2016.
- */
 public class StopWatch {
 
     private long hr;
@@ -14,21 +11,39 @@ public class StopWatch {
     private Handler handler;
     private long startTime, elapsedTime;
 
-    private int refreshRate = 100;
+
+    private int refreshRate = 1000;
 
     private String seconds, minute, hour;
     private boolean stopped;
 
-//    private Runnable startTimer = new Runnable() {
-//        @Override
-//        public void run() {
-//            elapsedTime = System.currentTimeMillis() - startTime;
-//            updateTimer();
-//            handler.postDelayed(this, refreshRate);
-//        }
-//    };
+    private Runnable runnableTimer = new Runnable() {
+        @Override
+        public void run() {
+            elapsedTime = System.currentTimeMillis() - startTime;
+            updateTimer(getElapsedTime());
+            handler.postDelayed(this, refreshRate);
+
+        }
+    };
+
+    public void start() {
+        startTime = System.currentTimeMillis();
+
+        handler.removeCallbacks(runnableTimer);
+        handler.postDelayed(runnableTimer, 0);
+
+    }
+
+    public void stop() {
+        startTime = System.currentTimeMillis();
+        stopped = true;
+
+    }
 
     public StopWatch() {
+
+        handler = new Handler();
     }
 
     public void updateTimer(float time) {
@@ -38,8 +53,7 @@ public class StopWatch {
 
     }
 
-    public String getSeconds(float time) {
-        updateTimer(time);
+    public String secondsToString() {
         sec = sec % 60;
         seconds=String.valueOf(sec);
         if(sec == 0){
@@ -49,13 +63,71 @@ public class StopWatch {
             seconds = "0"+seconds;
         }
         return seconds;
+
+    }
+
+    public String minuteToString() {
+        min = min % 60;
+        minute =String.valueOf(min);
+        if(min == 0){
+            minute = "00";
+        }
+        if(min <10 && min > 0){
+            minute = "0" + minute;
+        }
+
+        return minute;
+    }
+
+    public String hourToString() {
+        hour = String.valueOf(hr);
+        if(hr == 0){
+            hour = "00";
+        }
+        if(hr < 10 && hr > 0){
+            hour = "0" + hour;
+        }
+
+        return hour;
+    }
+    
+
+    public String getHour() {
+        return hour;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
     }
 
     public String getMinute() {
         return minute;
     }
 
-    public String getHour() {
-        return hour;
+    public void setMinute(String minute) {
+        this.minute = minute;
     }
+
+    public String getSeconds() {
+        return seconds;
+    }
+
+    public void setSeconds(String seconds) {
+        this.seconds = seconds;
+    }
+
+
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getElapsedTime() {
+        return elapsedTime;
+    }
+
 }
