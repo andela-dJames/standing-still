@@ -37,7 +37,12 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
 
     @Override
     public void onConnected(Bundle bundle) {
-        googleApiClient.connect();
+        locationrequest = LocationRequest.create();
+        locationrequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationrequest.setInterval(1000);
+        
+
+
 
     }
 
@@ -68,7 +73,19 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        
 
+
+    }
+
+    public void connect() {
+        googleApiClient.connect();
+    }
+
+    public void disconnect() {
+        googleApiClient.disconnect();
+    }
+
+    public boolean isConnected() {
+        return googleApiClient.isConnected();
     }
 }
