@@ -1,24 +1,43 @@
 package checkpoint4.andela.com.standingstill;
 
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 /**
  * Created by andeladev on 09/01/2016.
  */
-public class UserLocationService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class GoogleLocationService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private final static String TAG = "Location Activity";
 
-    private GoogleApiClient apiClient;
-    private Location location;
+    private GoogleApiClient googleApiClient;
+    private LocationRequest locationrequest;
+    private Context context;
+
+    public GoogleLocationService(Context context) {
+        this.context = context;
+        buildApiClient();
+    }
+
+    private void buildApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(context)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
+        googleApiClient.connect();
 
     }
 
@@ -49,6 +68,7 @@ public class UserLocationService implements GoogleApiClient.ConnectionCallbacks,
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        
 
     }
 }
