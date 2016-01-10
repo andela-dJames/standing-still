@@ -1,5 +1,6 @@
 package checkpoint4.andela.com.standingstill;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout parent;
     private boolean isRecording;
     private FloatingActionButton fab;
+    private GoogleLocationService googleLocationService;
+    private double userLongitude, userLatitude;
 
     private StopWatch watch;
 
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initializeComponents();
+        googleLocationService = new GoogleLocationService(this);
 
     }
 
@@ -73,6 +77,19 @@ public class MainActivity extends AppCompatActivity {
         timer.start();
 
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        googleLocationService.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        if (googleLocationService.isConnected()){
+            googleLocationService.disconnect();
+        }
+        super.onStop();
+    }
 
     public void stopRecording(View v) {
         changeIcon();
@@ -81,15 +98,13 @@ public class MainActivity extends AppCompatActivity {
                 .setAction("Action", null).show();
         timer.cancel();
         long time = watch.getElapsedTime();
-        long userdefined = System.currentTimeMillis();
-        if (userdefined > time){
-            Log.d(TAG, "location not saved");
-        }
-
-        else {
-            Log.d(TAG, "Location Saved");
-        }
-        Log.d(TAG, String.valueOf(watch.getElapsedTime()));
+        String message = watch.timeSpent(time);
+        Intent intent = new Intent(this, LocationFragment.class);
+        intent.putExtra("TIMESPENT", message);
+        intent.putExtra("LONGITUDE", String.valueOf(googleLocationService.getLongitude()));
+        intent.putExtra("LATITUDE", String.valueOf(googleLocationService.getLatitude()));
+        startActivity(intent);
+        Log.d(TAG, String.valueOf(googleLocationService.getLatitude()));
 
 
     }
@@ -103,6 +118,17 @@ public class MainActivity extends AppCompatActivity {
         else {
             fab.setImageResource(R.drawable.ic_stat_name);
         }
+    }
+
+    public void createFragment() {
+        setContentView(R.layout.activity_location_fragment);
+        if (findViewById(R.id.fragment_container) != null) {
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+        }
+
     }
 
     @Override
