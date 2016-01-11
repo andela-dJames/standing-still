@@ -31,7 +31,10 @@ public class DetectedActivities extends IntentService {
 
         ArrayList<DetectedActivity> detectedActivities = (ArrayList) result.getProbableActivities();
 
+        String mostprobableActivity =  result.getMostProbableActivity().toString();
+
         localIntent.putExtra(Constants.ACTIVITY_EXTRA, detectedActivities);
+        localIntent.putExtra(Constants.MOST_PROBABLE_ACTIVITY, mostprobableActivity);
         LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
 
     }
