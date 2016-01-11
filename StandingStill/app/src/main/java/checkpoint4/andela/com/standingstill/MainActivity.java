@@ -1,14 +1,18 @@
 package checkpoint4.andela.com.standingstill;
 
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.service.carrier.CarrierMessagingService;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,13 +22,16 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.util.ArrayList;
 
 import checkpoint4.andela.com.standingstill.timer.StopWatch;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ResultCallback<Status>{
 
     protected static final String TAG = "Main Activity";
 
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     private GoogleLocationService googleLocationService;
     private double userLongitude, userLatitude;
+    private ActivityBroadcastReceiver broadcastReceiver;
 
     private StopWatch watch;
 
@@ -50,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         initializeComponents();
         googleLocationService = new GoogleLocationService(this);
+        broadcastReceiver = new ActivityBroadcastReceiver();
 
     }
 
@@ -74,6 +83,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void requestUpdates() {
+        ActivityRecognition.ActivityRecognitionApi
+                .requestActivityUpdates(googleLocationService,
+                        Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
+                        getActivityPendingIntent()).setResultCallback(this);
+    }
+
     public void startRecording(View v) {
         changeIcon();
         isRecording = true;
@@ -96,6 +112,17 @@ public class MainActivity extends AppCompatActivity {
             googleLocationService.disconnect();
         }
         super.onStop();
+    }
+
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        super.onPause();
+    }
+
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
+                new IntentFilter(Constants.BROADCAST_ACTION));
     }
 
     public void stopRecording(View v) {
@@ -160,6 +187,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResult(Status status) {
+        
+    }
+
     public class LocationTimer extends CountDownTimer {
 
         /**
@@ -197,10 +229,23 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<DetectedActivity> detectedActivities =
                     intent.getParcelableArrayListExtra(Constants.ACTIVITY_EXTRA);
 
+            String userActivity = intent.getStringExtra(Constants.MOST_PROBABLE_ACTIVITY);
+            Log.d(TAG, userActivity);
+            String activity = "";
+
+            for (DetectedActivity detectedActivity: detectedActivities){
+                activity += detectedActivityToString(detectedActivity.getType()) + " "+detectedActivity.getConfidence();
+
+            }
+
+        }
+
+        public void registerReceiver() {
+
         }
     }
 
-    public String DetectedActivityToString(int activityType) {
+    public String detectedActivityToString(int activityType) {
         Resources resources = this.getResources();
 
         switch (activityType){
