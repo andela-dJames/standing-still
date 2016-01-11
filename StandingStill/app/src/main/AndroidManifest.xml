@@ -36,6 +36,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="checkpoint4.andela.com.standingstill.MainActivity" />
         </activity>
+        <service android:name=".DetectedActivities"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
