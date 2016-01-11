@@ -30,4 +30,6 @@ public final class Constants {
     };
 
     public static final long DETECTION_INTERVAL_IN_MILLISECONDS = 0;
+
+    public static final String MOST_PROBABLE_ACTIVITY = PACKAGE_NAME + ".most probable Activity";
 }
