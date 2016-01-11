@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
@@ -38,6 +39,7 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
     private void buildApiClient() {
         googleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
+                .addApi(ActivityRecognition.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
