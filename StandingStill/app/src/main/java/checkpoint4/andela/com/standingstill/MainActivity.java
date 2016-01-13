@@ -41,8 +41,7 @@ import java.util.ArrayList;
 
 import checkpoint4.andela.com.standingstill.timer.StopWatch;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback<Status>{
+public class MainActivity extends AppCompatActivity {
 
     protected static final String TAG = "Main Activity";
 
@@ -59,9 +58,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private LocationTimer timer;
 
-    private GoogleApiClient googleApiClient;
-    private Location location;
-    private LocationRequest locationRequest;
     private String userActivity;
     private DetectedActivity detectedActivity;
 
@@ -74,21 +70,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initializeComponents();
-        buildApiClient();
         broadcastReceiver = new ActivityBroadcastReceiver();
-        //requestUpdates();
 
     }
 
-    private void buildApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addApi(ActivityRecognition.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
-    }
 
     private void initializeComponents() {
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -112,20 +97,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
-    public void requestUpdates() {
+//    public void requestUpdates() {
+//
+//        ActivityRecognition.ActivityRecognitionApi
+//                .requestActivityUpdates(googleApiClient,
+//                        Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
+//                        getActivityPendingIntent()).setResultCallback(this);
+//
+//    }
 
-        ActivityRecognition.ActivityRecognitionApi
-                .requestActivityUpdates(googleApiClient,
-                        Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
-                        getActivityPendingIntent()).setResultCallback(this);
-
-    }
-
-    private PendingIntent getActivityPendingIntent() {
-        Intent intent = new Intent(this, DetectedActivities.class);
-        return PendingIntent.getService(this,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-    }
+//    private PendingIntent getActivityPendingIntent() {
+//        Intent intent = new Intent(this, DetectedActivities.class);
+//        return PendingIntent.getService(this,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//    }
 
     public void startRecording(View v) {
         changeIcon();
@@ -135,22 +120,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         watch.start();
         timer = new LocationTimer(watch.getStartTime(), 100);
         timer.start();
-        requestUpdates();
+        //requestUpdates();
 
     }
     @Override
     protected void onStart() {
         super.onStart();
-        googleApiClient.connect();
-        Log.d("Start", String.valueOf(googleApiClient.isConnected()));
-
     }
 
     @Override
     protected void onStop() {
-        if (googleApiClient.isConnected()){
-            googleApiClient.disconnect();
-        }
         super.onStop();
     }
 
@@ -179,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         intent.putExtra("LATITUDE", String.valueOf(latitude));
         intent.putExtra("DO", userActivity);
         startActivity(intent);
-        requestUpdates();
+
 
 
 
@@ -227,41 +206,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onResult(Status status) {
-
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.d(TAG, "Conected");
-        Log.d("Start", String.valueOf(googleApiClient.isConnected()));
-
-        locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(100);
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        Log.d(TAG, String.valueOf(latitude));
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 
     public class LocationTimer extends CountDownTimer {
