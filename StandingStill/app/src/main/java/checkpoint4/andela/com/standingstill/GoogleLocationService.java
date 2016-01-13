@@ -2,8 +2,8 @@ package checkpoint4.andela.com.standingstill;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -28,8 +28,7 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
 
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
-    private Location userLocation;
-    private Context context;
+    private Activity activity;
 
     private double longitude;
     private double latitude;
@@ -37,17 +36,23 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
     private String userActivity;
     private ActivityChangeListener listener;
 
-    public GoogleLocationService(Context context) {
-        this.context = context;
+    private Address userAddress;
+    private String address;
+
+    public GoogleLocationService(Activity activity) {
+        this.activity = activity;
         buildApiClient();
         longitude = 0;
         latitude = 0;
         activityBroadcastReceiver = new ActivityBroadcastReceiver();
+        userAddress = new Address(activity);
 
     }
-
+    public void setListener(ActivityChangeListener listener) {
+        this.listener = listener;
+    }
     private void buildApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(context)
+        googleApiClient = new GoogleApiClient.Builder(activity)
                 .addApi(LocationServices.API)
                 .addApi(ActivityRecognition.API)
                 .addConnectionCallbacks(this)
@@ -80,8 +85,8 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
     }
 
     private PendingIntent getActivityPendingIntent() {
-        Intent intent = new Intent(context, DetectedActivities.class);
-        return PendingIntent.getService(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(activity, DetectedActivities.class);
+        return PendingIntent.getService(activity,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     }
 
@@ -117,17 +122,14 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
 
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        requestUpdates();
-        listener = new ActivityChangeListener() {
-            @Override
-            public void onActivityChange() {
-                userActivity = activityBroadcastReceiver.getUserActivity();
+        address = userAddress.getCountryname(latitude, longitude);
 
-            }
-        };
-        activityBroadcastReceiver.setListener(listener);
+        listener.onActivityChange(address);
 
-        Log.d(TAG, userActivity);
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     @Override
@@ -152,6 +154,9 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
         return googleApiClient.isConnected();
     }
 
+    public String getUserActivity() {
+        return userActivity;
+    }
 
     @Override
     public void onResult(Status status) {
