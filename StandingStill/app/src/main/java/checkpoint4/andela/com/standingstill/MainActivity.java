@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.location.Location;
+import android.location.*;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -31,6 +31,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.drive.internal.AddEventListenerRequest;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.LocationListener;
@@ -41,7 +42,7 @@ import java.util.ArrayList;
 
 import checkpoint4.andela.com.standingstill.timer.StopWatch;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ResultCallback<Status> {
 
     protected static final String TAG = "Main Activity";
 
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isRecording;
     private FloatingActionButton fab;
     private double longitude, latitude;
+    private GoogleLocationService googleLocationService;
     private ActivityBroadcastReceiver broadcastReceiver;
 
     private StopWatch watch;
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String userActivity;
     private DetectedActivity detectedActivity;
+    //private Address userAddress;
+    private ActivityChangeListener listener;
 
 
 
@@ -85,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
         isRecording = false;
         watch = new StopWatch();
+        googleLocationService = new GoogleLocationService(MainActivity.this);
+
     }
 
     public void record(View v) {
@@ -96,21 +102,29 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    public void getAddreess() {
+        listener = new ActivityChangeListener() {
+            @Override
+            public void onActivityChange(String name) {
+                Log.d(TAG, name);
+            }
+        };
+        googleLocationService.setListener(listener);
+    }
+    public void requestUpdates() {
 
-//    public void requestUpdates() {
-//
-//        ActivityRecognition.ActivityRecognitionApi
-//                .requestActivityUpdates(googleApiClient,
-//                        Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
-//                        getActivityPendingIntent()).setResultCallback(this);
-//
-//    }
+        ActivityRecognition.ActivityRecognitionApi
+                .requestActivityUpdates(googleLocationService.getGoogleApiClient(),
+                        Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
+                        getActivityPendingIntent()).setResultCallback(this);
 
-//    private PendingIntent getActivityPendingIntent() {
-//        Intent intent = new Intent(this, DetectedActivities.class);
-//        return PendingIntent.getService(this,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//    }
+    }
+
+    private PendingIntent getActivityPendingIntent() {
+        Intent intent = new Intent(this, DetectedActivities.class);
+        return PendingIntent.getService(this,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+    }
 
     public void startRecording(View v) {
         changeIcon();
@@ -120,12 +134,18 @@ public class MainActivity extends AppCompatActivity {
         watch.start();
         timer = new LocationTimer(watch.getStartTime(), 100);
         timer.start();
-        //requestUpdates();
+        requestUpdates();
+        getAddreess();
+//        String data = googleLocationService.getLatitude() + " "+googleLocationService.getLongitude();
+//        String name  = userAddress.getCountryname(googleLocationService.getLatitude(), googleLocationService.getLongitude());
+        //Log.d(TAG, name);
+//        Log.d(TAG, googleLocationService.getUserActivity() + " " + googleLocationService.getLatitude());
 
     }
     @Override
     protected void onStart() {
         super.onStart();
+        googleLocationService.connect();
     }
 
     @Override
@@ -158,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("LATITUDE", String.valueOf(latitude));
         intent.putExtra("DO", userActivity);
         startActivity(intent);
-
-
 
 
     }
@@ -208,6 +226,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResult(Status status) {
+        Log.d(TAG, status.toString());
+
+    }
+
     public class LocationTimer extends CountDownTimer {
 
         /**
@@ -253,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
 
             for (DetectedActivity detectedActivity: detectedActivities){
                 activity += detectedActivityToString(detectedActivity.getType()) + " "+ detectedActivity.getConfidence();
-                 Log.d(TAG, activity);
+                 Log.d(TAG, userActivity);
 
             }
 
