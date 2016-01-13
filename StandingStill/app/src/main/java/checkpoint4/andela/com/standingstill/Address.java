@@ -7,9 +7,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by andeladev on 13/01/2016.
- */
+
 public class Address {
 
     private Activity activity;
@@ -17,6 +15,7 @@ public class Address {
 
     public Address(Activity activity) {
         this.activity = activity;
+        country = "";
 
     }
 
@@ -37,8 +36,9 @@ public class Address {
         if(addressList != null && addressList.size() > 0 ){
 
             android.location.Address address = addressList.get(0);
-            Log.d("TAG", address.getCountryName());
-          country =   address.getSubAdminArea();//+ ", "+ address.getAdminArea();
+
+          country =   address.getThoroughfare() + ", "+ address.getSubLocality();
+            Log.d("TAG", country);
         }
 
         return country;
