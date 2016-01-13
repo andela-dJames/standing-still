@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,10 +13,10 @@ import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-/**
- * Created by andeladev on 09/01/2016.
- */
-public class GoogleLocationService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+
+public class GoogleLocationService implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener{
 
     private final static String TAG = "Location Activity";
 
@@ -64,8 +63,6 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationrequest, this);
 
 
-
-
     }
 
     public double getLongitude() {
@@ -93,6 +90,7 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
 
     }
 
+
     @Override
     public void onLocationChanged(Location location) {
 
@@ -108,6 +106,10 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
 
     }
 
+    public GoogleApiClient getGoogleApiClient() {
+        return googleApiClient;
+    }
+
     public void connect() {
         googleApiClient.connect();
     }
@@ -119,4 +121,6 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
     public boolean isConnected() {
         return googleApiClient.isConnected();
     }
+
+
 }
