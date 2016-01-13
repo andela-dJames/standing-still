@@ -1,7 +1,8 @@
 package checkpoint4.andela.com.standingstill;
 
-import android.content.Context;
+import android.app.Activity;
 import android.location.Geocoder;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,23 +12,36 @@ import java.util.List;
  */
 public class Address {
 
-    private double logitude;
-    private double latitude;
-    private Context context;
+    private Activity activity;
+    private String country;
 
-    public Address() {
+    public Address(Activity activity) {
+        this.activity = activity;
+
     }
 
-    public Address(double logitude, double latitude, Context context) {
-        this.logitude = logitude;
-        this.latitude = latitude;
-        this.context = context;
-    }
-
-    private List<android.location.Address> getAddress() throws IOException {
-        Geocoder geocoder = new Geocoder(context);
+    public List<android.location.Address> getAddress(double latitude, double logitude) throws IOException {
+        Geocoder geocoder = new Geocoder(activity);
         List<android.location.Address> addresses = null;
         return addresses = geocoder.getFromLocation(latitude, logitude, 1);
 
     }
+
+    public String getCountryname(double latitude, double longitude) {
+        List<android.location.Address> addressList= null;
+        try {
+            addressList = getAddress(latitude, longitude);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(addressList != null && addressList.size() > 0 ){
+
+            android.location.Address address = addressList.get(0);
+            Log.d("TAG", address.getCountryName());
+          country =   address.getSubAdminArea();//+ ", "+ address.getAdminArea();
+        }
+
+        return country;
+    }
+
 }
