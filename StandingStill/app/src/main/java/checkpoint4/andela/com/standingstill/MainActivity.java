@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
             String activity = "";
 
             for (DetectedActivity detectedActivity: detectedActivities){
-                activity += detectedActivityToString(detectedActivity.getType()) + " "+detectedActivity.getConfidence();
+                activity += detectedActivityToString(detectedActivity.getType()) + " "+ detectedActivity.getConfidence();
                  Log.d(TAG, activity);
 
             }
