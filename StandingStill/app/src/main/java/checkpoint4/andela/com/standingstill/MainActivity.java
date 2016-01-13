@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
     private DetectedActivity detectedActivity;
     //private Address userAddress;
     private ActivityChangeListener listener;
+    private String address;
 
 
 
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         isRecording = false;
         watch = new StopWatch();
         googleLocationService = new GoogleLocationService(MainActivity.this);
+        address = "";
+        getAddreess();
 
     }
 
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         listener = new ActivityChangeListener() {
             @Override
             public void onActivityChange(String name) {
-                Log.d(TAG, name);
+                address = name;
             }
         };
         googleLocationService.setListener(listener);
@@ -135,8 +138,10 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         timer = new LocationTimer(watch.getStartTime(), 100);
         timer.start();
         requestUpdates();
-        getAddreess();
-//        String data = googleLocationService.getLatitude() + " "+googleLocationService.getLongitude();
+        Log.d(TAG, address);
+        //getAddreess();
+        latitude = googleLocationService.getLatitude();
+        longitude = googleLocationService.getLongitude();
 //        String name  = userAddress.getCountryname(googleLocationService.getLatitude(), googleLocationService.getLongitude());
         //Log.d(TAG, name);
 //        Log.d(TAG, googleLocationService.getUserActivity() + " " + googleLocationService.getLatitude());
@@ -171,11 +176,14 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
                 .setAction("Action", null).show();
         timer.cancel();
         long time = watch.getElapsedTime();
+        Log.d(TAG, address);
+
         String message = watch.timeSpent(time);
         Intent intent = new Intent(this, LocationFragment.class);
         intent.putExtra("TIMESPENT", message);
         intent.putExtra("LONGITUDE", String.valueOf(longitude));
         intent.putExtra("LATITUDE", String.valueOf(latitude));
+        intent.putExtra("ADDRESS", address);
         intent.putExtra("DO", userActivity);
         startActivity(intent);
 
@@ -272,12 +280,12 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
 
             //userActivity = intent.getStringExtra(Constants.MOST_PROBABLE_ACTIVITY);
             userActivity = detectedActivityToString(mostprobableActivity.get(0).getType());
-            Log.d(TAG, detectedActivities.toString());
+            //Log.d(TAG, detectedActivities.toString());
             String activity = "";
 
             for (DetectedActivity detectedActivity: detectedActivities){
                 activity += detectedActivityToString(detectedActivity.getType()) + " "+ detectedActivity.getConfidence();
-                 Log.d(TAG, userActivity);
+                 //Log.d(TAG, userActivity);
 
             }
 
