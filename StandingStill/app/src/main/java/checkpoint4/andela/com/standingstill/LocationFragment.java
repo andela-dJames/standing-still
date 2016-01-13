@@ -64,11 +64,12 @@ public class LocationFragment extends AppCompatActivity {
         Intent intent = getIntent();
         String message = intent.getStringExtra("TIMESPENT");
         String user = intent.getStringExtra("LATITUDE");
+        String activity = intent.getStringExtra("DO");
         TextView txt = new TextView(this);
         txt.setTextSize(40);
         txt.setText(message);
         view.setText(message);
-        latitiudeText.setText(user);
+        latitiudeText.setText(user+ " "+ activity);
 
 
 
