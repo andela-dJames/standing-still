@@ -5,5 +5,5 @@ package checkpoint4.andela.com.standingstill;
  */
 public interface ActivityChangeListener {
 
-    public void onActivityChange();
+    public void onActivityChange(String name);
 }
