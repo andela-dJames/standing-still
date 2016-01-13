@@ -1,11 +1,16 @@
 package checkpoint4.andela.com.standingstill;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -22,16 +27,22 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.DetectedActivity;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 
 import checkpoint4.andela.com.standingstill.timer.StopWatch;
 
-public class MainActivity extends AppCompatActivity implements ResultCallback<Status>{
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback<Status>{
 
     protected static final String TAG = "Main Activity";
 
@@ -41,13 +52,19 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
     private RelativeLayout parent;
     private boolean isRecording;
     private FloatingActionButton fab;
-    private GoogleLocationService googleLocationService;
-    private double userLongitude, userLatitude;
+    private double longitude, latitude;
     private ActivityBroadcastReceiver broadcastReceiver;
 
     private StopWatch watch;
 
     private LocationTimer timer;
+
+    private GoogleApiClient googleApiClient;
+    private Location location;
+    private LocationRequest locationRequest;
+    private String userActivity;
+    private DetectedActivity detectedActivity;
+
 
 
     @Override
@@ -57,8 +74,19 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initializeComponents();
-        googleLocationService = new GoogleLocationService(this);
+        buildApiClient();
         broadcastReceiver = new ActivityBroadcastReceiver();
+        //requestUpdates();
+
+    }
+
+    private void buildApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addApi(ActivityRecognition.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
 
     }
 
@@ -68,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         hourDisplay = (TextView) findViewById(R.id.hourText);
         minuteDisplay = (TextView) findViewById(R.id.minuteText);
         secondsDisplay = (TextView) findViewById(R.id.secondText);
+        userActivity = "";
 
         isRecording = false;
         watch = new StopWatch();
@@ -84,10 +113,18 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
     }
 
     public void requestUpdates() {
+
         ActivityRecognition.ActivityRecognitionApi
-                .requestActivityUpdates(googleLocationService,
+                .requestActivityUpdates(googleApiClient,
                         Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
                         getActivityPendingIntent()).setResultCallback(this);
+
+    }
+
+    private PendingIntent getActivityPendingIntent() {
+        Intent intent = new Intent(this, DetectedActivities.class);
+        return PendingIntent.getService(this,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
     }
 
     public void startRecording(View v) {
@@ -98,18 +135,21 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         watch.start();
         timer = new LocationTimer(watch.getStartTime(), 100);
         timer.start();
+        requestUpdates();
 
     }
     @Override
     protected void onStart() {
         super.onStart();
-        googleLocationService.connect();
+        googleApiClient.connect();
+        Log.d("Start", String.valueOf(googleApiClient.isConnected()));
+
     }
 
     @Override
     protected void onStop() {
-        if (googleLocationService.isConnected()){
-            googleLocationService.disconnect();
+        if (googleApiClient.isConnected()){
+            googleApiClient.disconnect();
         }
         super.onStop();
     }
@@ -135,10 +175,12 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         String message = watch.timeSpent(time);
         Intent intent = new Intent(this, LocationFragment.class);
         intent.putExtra("TIMESPENT", message);
-        intent.putExtra("LONGITUDE", String.valueOf(googleLocationService.getLongitude()));
-        intent.putExtra("LATITUDE", String.valueOf(googleLocationService.getLatitude()));
+        intent.putExtra("LONGITUDE", String.valueOf(longitude));
+        intent.putExtra("LATITUDE", String.valueOf(latitude));
+        intent.putExtra("DO", userActivity);
         startActivity(intent);
-        Log.d(TAG, String.valueOf(googleLocationService.getLatitude()));
+        requestUpdates();
+
 
 
     }
@@ -189,7 +231,37 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
 
     @Override
     public void onResult(Status status) {
-        
+
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "Conected");
+        Log.d("Start", String.valueOf(googleApiClient.isConnected()));
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(100);
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        Log.d(TAG, String.valueOf(latitude));
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 
     public class LocationTimer extends CountDownTimer {
@@ -228,13 +300,16 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         public void onReceive(Context context, Intent intent) {
             ArrayList<DetectedActivity> detectedActivities =
                     intent.getParcelableArrayListExtra(Constants.ACTIVITY_EXTRA);
+            ArrayList<DetectedActivity> mostprobableActivity = intent.getParcelableArrayListExtra(Constants.MOST_PROBABLE_ACTIVITY);
 
-            String userActivity = intent.getStringExtra(Constants.MOST_PROBABLE_ACTIVITY);
-            Log.d(TAG, userActivity);
+            //userActivity = intent.getStringExtra(Constants.MOST_PROBABLE_ACTIVITY);
+            userActivity = detectedActivityToString(mostprobableActivity.get(0).getType());
+            Log.d(TAG, detectedActivities.toString());
             String activity = "";
 
             for (DetectedActivity detectedActivity: detectedActivities){
                 activity += detectedActivityToString(detectedActivity.getType()) + " "+detectedActivity.getConfidence();
+                 Log.d(TAG, activity);
 
             }
 
