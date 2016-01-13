@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,7 +34,6 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
     private ActivityBroadcastReceiver activityBroadcastReceiver;
     private String userActivity;
     private ActivityChangeListener listener;
-
     private Address userAddress;
     private String address;
 
@@ -46,6 +44,7 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
         latitude = 0;
         activityBroadcastReceiver = new ActivityBroadcastReceiver();
         userAddress = new Address(activity);
+        address = "";
 
     }
     public void setListener(ActivityChangeListener listener) {
@@ -58,6 +57,7 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
 
     }
 
@@ -123,8 +123,9 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         address = userAddress.getCountryname(latitude, longitude);
-
-        listener.onActivityChange(address);
+        if (!address.equals(null)) {
+            listener.onActivityChange(address);
+        }
 
     }
 
