@@ -16,6 +16,12 @@ public class ActivityBroadcastReceiver extends BroadcastReceiver {
 
     private String userActivity;
     private Context context;
+    private ActivityChangeListener changeListener;
+
+    public void setListener(ActivityChangeListener listener) {
+        changeListener = listener;
+
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -36,10 +42,9 @@ public class ActivityBroadcastReceiver extends BroadcastReceiver {
 
     }
 
-    public void registerReceiver() {
-
+    public String getUserActivity() {
+        return userActivity;
     }
-
 
     public String detectedActivityToString(int activityType) {
         Resources resources = context.getResources();
