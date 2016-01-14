@@ -29,8 +29,6 @@ public class ActivityBroadcastReceiver extends BroadcastReceiver {
         ArrayList<DetectedActivity> detectedActivities =
                 intent.getParcelableArrayListExtra(Constants.ACTIVITY_EXTRA);
         ArrayList<DetectedActivity> mostprobableActivity = intent.getParcelableArrayListExtra(Constants.MOST_PROBABLE_ACTIVITY);
-
-        //userActivity = intent.getStringExtra(Constants.MOST_PROBABLE_ACTIVITY);
         userActivity = detectedActivityToString(mostprobableActivity.get(0).getType());
         String activity = "";
 
