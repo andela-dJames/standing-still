@@ -1,68 +1,92 @@
 package checkpoint4.andela.com.standingstill;
 
+
 import android.Manifest;
-import android.content.Context;
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-/**
- * Created by andeladev on 09/01/2016.
- */
-public class GoogleLocationService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+
+public class GoogleLocationService implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener,
+        ResultCallback<Status>{
 
     private final static String TAG = "Location Activity";
 
     private GoogleApiClient googleApiClient;
-    private LocationRequest locationrequest;
-    private Location userLocation;
-    private Context context;
+    private LocationRequest locationRequest;
+    private Activity activity;
 
     private double longitude;
     private double latitude;
+    private ActivityBroadcastReceiver activityBroadcastReceiver;
+    private String userActivity;
+    private ActivityChangeListener listener;
+    private Address userAddress;
+    private String address;
 
-    public GoogleLocationService(Context context) {
-        this.context = context;
+    public GoogleLocationService(Activity activity) {
+        this.activity = activity;
         buildApiClient();
         longitude = 0;
         latitude = 0;
-    }
+        activityBroadcastReceiver = new ActivityBroadcastReceiver();
+        userAddress = new Address(activity);
+        address = "";
 
+    }
+    public void setListener(ActivityChangeListener listener) {
+        this.listener = listener;
+    }
     private void buildApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(context)
+        googleApiClient = new GoogleApiClient.Builder(activity)
                 .addApi(LocationServices.API)
+                .addApi(ActivityRecognition.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
 
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        locationrequest = LocationRequest.create();
-        locationrequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationrequest.setInterval(100);
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(1000);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
+
             return;
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationrequest, this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
 
 
+    }
 
+        public void requestUpdates() {
+
+        ActivityRecognition.ActivityRecognitionApi
+                .requestActivityUpdates(googleApiClient,
+                        Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
+                        getActivityPendingIntent()).setResultCallback(this);
+
+    }
+
+    private PendingIntent getActivityPendingIntent() {
+        Intent intent = new Intent(activity, DetectedActivities.class);
+        return PendingIntent.getService(activity,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     }
 
@@ -91,19 +115,32 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
 
     }
 
+
     @Override
     public void onLocationChanged(Location location) {
 
-        Log.d(TAG, location.toString());
+
         latitude = location.getLatitude();
         longitude = location.getLongitude();
+        address = userAddress.getCountryname(latitude, longitude);
+        if (!address.equals(null)) {
+            listener.onActivityChange(address);
+        }
 
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
 
+    }
+
+    public GoogleApiClient getGoogleApiClient() {
+        return googleApiClient;
     }
 
     public void connect() {
@@ -116,5 +153,14 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
 
     public boolean isConnected() {
         return googleApiClient.isConnected();
+    }
+
+    public String getUserActivity() {
+        return userActivity;
+    }
+
+    @Override
+    public void onResult(Status status) {
+
     }
 }
