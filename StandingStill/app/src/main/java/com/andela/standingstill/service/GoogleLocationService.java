@@ -1,4 +1,4 @@
-package checkpoint4.andela.com.standingstill;
+package com.andela.standingstill.service;
 
 
 import android.Manifest;
@@ -16,6 +16,9 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import com.andela.standingstill.model.Address;
+import com.andela.standingstill.activity.Constants;
 
 
 public class GoogleLocationService implements GoogleApiClient.ConnectionCallbacks,

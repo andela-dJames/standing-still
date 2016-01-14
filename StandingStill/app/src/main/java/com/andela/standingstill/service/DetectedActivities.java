@@ -1,4 +1,4 @@
-package checkpoint4.andela.com.standingstill;
+package com.andela.standingstill.service;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -8,7 +8,8 @@ import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import com.andela.standingstill.activity.Constants;
 
 /**
  * Created by andeladev on 10/01/2016.

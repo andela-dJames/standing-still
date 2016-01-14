@@ -1,4 +1,4 @@
-package checkpoint4.andela.com.standingstill;
+package com.andela.standingstill.activity;
 
 import com.google.android.gms.location.DetectedActivity;
 

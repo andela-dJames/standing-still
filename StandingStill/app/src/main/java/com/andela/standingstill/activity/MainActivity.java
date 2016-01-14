@@ -1,20 +1,13 @@
-package checkpoint4.andela.com.standingstill;
+package com.andela.standingstill.activity;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.location.*;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.service.carrier.CarrierMessagingService;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -27,20 +20,20 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.andela.standingstill.R;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.drive.internal.AddEventListenerRequest;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.DetectedActivity;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 
-import checkpoint4.andela.com.standingstill.timer.StopWatch;
+import com.andela.standingstill.timer.StopWatch;
+
+import com.andela.standingstill.fragment.LocationFragment;
+import com.andela.standingstill.service.ActivityChangeListener;
+import com.andela.standingstill.service.DetectedActivities;
+import com.andela.standingstill.service.GoogleLocationService;
 
 public class MainActivity extends AppCompatActivity implements ResultCallback<Status> {
 

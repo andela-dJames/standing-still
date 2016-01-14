@@ -1,4 +1,4 @@
-package checkpoint4.andela.com.standingstill.dal;
+package com.andela.standingstill.dal;
 
 import android.net.Uri;
 

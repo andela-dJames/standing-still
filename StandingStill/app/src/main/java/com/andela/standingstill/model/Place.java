@@ -1,4 +1,4 @@
-package checkpoint4.andela.com.standingstill.model;
+package com.andela.standingstill.model;
 
 import org.joda.time.DateTime;
 

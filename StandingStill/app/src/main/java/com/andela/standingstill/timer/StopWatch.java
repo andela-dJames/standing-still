@@ -1,4 +1,4 @@
-package checkpoint4.andela.com.standingstill.timer;
+package com.andela.standingstill.timer;
 
 import android.os.Handler;
 

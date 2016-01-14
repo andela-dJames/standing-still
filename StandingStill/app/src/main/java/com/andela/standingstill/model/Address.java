@@ -1,4 +1,4 @@
-package checkpoint4.andela.com.standingstill;
+package com.andela.standingstill.model;
 
 import android.app.Activity;
 import android.location.Geocoder;

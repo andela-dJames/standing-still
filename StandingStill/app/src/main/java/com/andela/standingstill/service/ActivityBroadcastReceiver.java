@@ -1,13 +1,16 @@
-package checkpoint4.andela.com.standingstill;
+package com.andela.standingstill.service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 
+import com.andela.standingstill.R;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.util.ArrayList;
+
+import com.andela.standingstill.activity.Constants;
 
 /**
  * Created by andeladev on 13/01/2016.

@@ -1,4 +1,4 @@
-package checkpoint4.andela.com.standingstill;
+package com.andela.standingstill.service;
 
 /**
  * Created by andeladev on 13/01/2016.
