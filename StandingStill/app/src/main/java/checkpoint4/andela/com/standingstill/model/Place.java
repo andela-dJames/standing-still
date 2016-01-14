@@ -1,5 +1,7 @@
 package checkpoint4.andela.com.standingstill.model;
 
+import org.joda.time.DateTime;
+
 /**
  * Created by andeladev on 14/01/2016.
  */
@@ -12,5 +14,8 @@ public class Place {
     private double latitude;
 
     private long timeSpent;
-    
+
+    private DateTime dateVisited;
+
+
 }
