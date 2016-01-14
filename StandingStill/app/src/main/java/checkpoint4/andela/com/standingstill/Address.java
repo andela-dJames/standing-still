@@ -21,8 +21,7 @@ public class Address {
 
     public List<android.location.Address> getAddress(double latitude, double logitude) throws IOException {
         Geocoder geocoder = new Geocoder(activity);
-        List<android.location.Address> addresses = null;
-        return addresses = geocoder.getFromLocation(latitude, logitude, 1);
+        return geocoder.getFromLocation(latitude, logitude, 1);
 
     }
 
