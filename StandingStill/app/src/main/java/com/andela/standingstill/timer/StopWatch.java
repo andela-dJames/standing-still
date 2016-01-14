@@ -1,4 +1,4 @@
-package checkpoint4.andela.com.standingstill.timer;
+package com.andela.standingstill.timer;
 
 import android.os.Handler;
 
@@ -89,6 +89,37 @@ public class StopWatch {
         }
 
         return hour;
+    }
+
+    public String timeSpent(long time) {
+        String initial = "";
+        String message = "";
+        initial = hourToString();
+        if (initial.equals("00")){
+            message +="";
+        }
+        else {
+            message += initial + " hrs, ";
+        }
+
+        initial = minuteToString();
+        if (initial.equals("00")){
+            message +="";
+        }
+        else {
+            message += initial + " min, ";
+        }
+
+        initial = secondsToString();
+
+        if (initial.equals("00")){
+            message += "";
+        }
+        else {
+            message += initial + " sec";
+        }
+
+        return message;
     }
     
 

@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">Standing Still</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_location_fragment">LocationFragment</string>
+    <string name="still">Standing Still</string>
+    <string name="in_vehicle">Transport</string>
+    <string name="walking">walking</string>
+    <string name="on_bicycle">On a bicycle</string>
+    <string name="on_foot">On foot</string>
+    <string name="unknown">Unknown Activity</string>
+    <string name="running">Running</string>
+    <string name="unidentifiable_activity">Unidentifiable Movement</string>
 </resources>
