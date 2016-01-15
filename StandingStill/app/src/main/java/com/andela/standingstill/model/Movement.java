@@ -15,7 +15,7 @@ public class Movement {
         UNKNOWN
     }
 
-
+    private int ID;
     private Type movementType;
 
     private long timeSpent;
@@ -24,13 +24,24 @@ public class Movement {
 
     private String address;
 
+    private String coordinates;
+
     public Movement() {
     }
 
-    public Movement(long timeSpent, DateTime date, String address) {
+    public Movement(long timeSpent, DateTime date, String address, String coordinates) {
         this.timeSpent = timeSpent;
         this.date = date;
         this.address = address;
+        this.coordinates = coordinates;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public Type getMovementType() {
@@ -63,5 +74,13 @@ public class Movement {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 }
