@@ -7,7 +7,7 @@ import com.google.android.gms.location.DetectedActivity;
  */
 public final class Constants {
 
-    public static final String PACKAGE_NAME = "com.andela.checkpoint4";
+    public static final String PACKAGE_NAME = "com.andela.standingstill";
 
     public static final String BROADCAST_ACTION = PACKAGE_NAME + ".broadcast action";
 
