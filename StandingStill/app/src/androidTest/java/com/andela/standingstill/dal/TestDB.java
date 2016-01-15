@@ -1,10 +1,16 @@
 package com.andela.standingstill.dal;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
+import com.andela.standingstill.model.Movement;
+
+import org.joda.time.DateTime;
+
 import java.util.HashSet;
+import java.util.List;
 
 
 public class TestDB extends AndroidTestCase {
@@ -56,6 +62,167 @@ public class TestDB extends AndroidTestCase {
         assertTrue("Error: The database doesn't contain all of the required location entry columns",
                 movementTableColumnNames.isEmpty());
         db.close();
+    }
+
+    public long insertMovement() {
+        SqliteDBHelper sqliteDBHelper = new SqliteDBHelper(mContext);
+        //SQLiteDatabase db = sqliteDBHelper.getWritableDatabase();
+
+        ContentValues testValues = TestUtilities.createMovementValues();
+        long rowID = sqliteDBHelper.getDatabase().insert(SqliteContract.MovementTable.TABLE_NAME, null, testValues);
+        assertTrue(rowID !=-1);
+
+        Cursor cursor = sqliteDBHelper.getDatabase().query(
+                SqliteContract.MovementTable.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        assertTrue( "Error: No Records returned from location query", cursor.moveToFirst() );
+
+        return rowID;
+    }
+
+    public void testRateTable() {
+        long id = insertMovement();
+        assertFalse("Error: Location Not Inserted Correctly", id == -1L);
+
+    }
+
+    public void testGetByID() {
+        SqliteDBHelper sqliteDBHelper = new SqliteDBHelper(mContext);
+        DataAccess dataAccess = new DataAccess(sqliteDBHelper);
+        Movement movement = new Movement();
+        movement.setDate(DateTime.now());
+        movement.setMovementType(Movement.Type.STILL);
+        movement.setAddress("55, Moleye Street");
+        movement.setTimeSpent(152677);
+        movement.setCoordinates("6.34554, 3.89992");
+
+        dataAccess.save(movement);
+        Movement myMovement = dataAccess.getByID(1);
+        assertEquals("55, Moleye Street", myMovement.getAddress());
+        assertEquals("STILL", myMovement.getMovementType().toString());
+
+
+    }
+
+    public void testGetAll() {
+        deleteDb();
+        SqliteDBHelper sqliteDBHelper = new SqliteDBHelper(mContext);
+        DataAccess dataAccess = new DataAccess(sqliteDBHelper);
+        Movement movement = new Movement();
+        movement.setDate(DateTime.now());
+        movement.setMovementType(Movement.Type.STILL);
+        movement.setAddress("55, Moleye Street");
+        movement.setTimeSpent(152677);
+        movement.setCoordinates("6.34554, 3.89992");
+
+        Movement movement2 = new Movement();
+        movement2.setDate(DateTime.now());
+        movement2.setMovementType(Movement.Type.STILL);
+        movement2.setAddress("55, Moleye Street");
+        movement2.setTimeSpent(152677);
+        movement2.setCoordinates("6.34554, 3.89992");
+
+        dataAccess.save(movement);
+        dataAccess.save(movement2);
+        Movement myMovement = dataAccess.getByID(1);
+        List<Movement> movements = dataAccess.listAll(DataCollection.Selection.LOCATION_ADDRESS);
+
+        assertEquals(2, movements.size());
+
+        System.out.print(movement.getDate());
+
+    }
+
+    public void testGetByMovementType() {
+
+        deleteDb();
+        SqliteDBHelper sqliteDBHelper = new SqliteDBHelper(mContext);
+        DataAccess dataAccess = new DataAccess(sqliteDBHelper);
+        Movement movement = new Movement();
+        movement.setDate(DateTime.now());
+        movement.setMovementType(Movement.Type.WALKING);
+        movement.setAddress("55, Moleye Street");
+        movement.setTimeSpent(152677);
+        movement.setCoordinates("6.34554, 3.89992");
+
+        Movement movement2 = new Movement();
+        movement2.setDate(DateTime.now());
+        movement2.setMovementType(Movement.Type.STILL);
+        movement2.setAddress("55, Moleye Street");
+        movement2.setTimeSpent(152677);
+        movement2.setCoordinates("6.34554, 3.89992");
+
+        dataAccess.save(movement);
+        dataAccess.save(movement2);
+        //Movement myMovement = dataAccess.getByID(1);
+        List<Movement> movements = dataAccess.getByMovementType(Movement.Type.WALKING, DataCollection.Selection.LOCATION_ADDRESS);
+
+        assertEquals(1, movements.size());
+
+
+    }
+
+    public void testGetByCoordinate(){
+
+        deleteDb();
+        SqliteDBHelper sqliteDBHelper = new SqliteDBHelper(mContext);
+        DataAccess dataAccess = new DataAccess(sqliteDBHelper);
+        Movement movement = new Movement();
+        movement.setDate(DateTime.now());
+        movement.setMovementType(Movement.Type.WALKING);
+        movement.setAddress("55, Moleye Street");
+        movement.setTimeSpent(152677);
+        movement.setCoordinates("6.34554, 3.89992");
+
+        Movement movement2 = new Movement();
+        movement2.setDate(DateTime.now());
+        movement2.setMovementType(Movement.Type.STILL);
+        movement2.setAddress("55, Moleye Street");
+        movement2.setTimeSpent(152677);
+        movement2.setCoordinates("6.34554, 3.89992");
+
+        dataAccess.save(movement);
+        dataAccess.save(movement2);
+        //Movement myMovement = dataAccess.getByID(1);
+        List<Movement> movements = dataAccess.getByCordinates(movement.getCoordinates(), DataCollection.Selection.LOCATION_ADDRESS);
+
+        assertEquals(2, movements.size());
+
+    }
+
+    public void testGetByAddress(){
+
+        deleteDb();
+        SqliteDBHelper sqliteDBHelper = new SqliteDBHelper(mContext);
+        DataAccess dataAccess = new DataAccess(sqliteDBHelper);
+        Movement movement = new Movement();
+        movement.setDate(DateTime.now());
+        movement.setMovementType(Movement.Type.WALKING);
+        movement.setAddress("55, Moleye Street");
+        movement.setTimeSpent(152677);
+        movement.setCoordinates("6.34554, 3.89992");
+
+        Movement movement2 = new Movement();
+        movement2.setDate(DateTime.now());
+        movement2.setMovementType(Movement.Type.STILL);
+        movement2.setAddress("55, Moleye Street");
+        movement2.setTimeSpent(152677);
+        movement2.setCoordinates("6.34554, 3.89992");
+
+        dataAccess.save(movement);
+        dataAccess.save(movement2);
+        //Movement myMovement = dataAccess.getByID(1);
+        List<Movement> movements = dataAccess.getByLocationAddress("55, Moleye Street", DataCollection.Selection.LOCATION_ADDRESS);
+
+        assertEquals(2, movements.size());
+
     }
 
 }
