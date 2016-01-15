@@ -30,8 +30,8 @@ public class DataAccess implements DataCollection {
 
         movement.setID((int) cursor.getLong(0));
         movement.setDate(DateTime.parse(cursor.getString(SqliteContract.MovementTable.DATE_COLUMN_INDEX)));
-        movement.setAddress(cursor.getString(SqliteContract.MovementTable.LOCATION_ADDRESS_COLUMN_INDEX));
         movement.setCoordinates(cursor.getString(SqliteContract.MovementTable.COORDINATE_COLUMN_INDEX));
+        movement.setAddress(cursor.getString(SqliteContract.MovementTable.LOCATION_ADDRESS_COLUMN_INDEX));
         movement.setTimeSpent(Long.parseLong(cursor.getString(SqliteContract.MovementTable.TIME_SPENT_ELAPSED_COLUMN_INDEX)));
         movement.setMovementType(Movement.Type.valueOf(cursor.getString(SqliteContract.MovementTable.MOVEMENT_TYPE_COLUMN_INDEX)));
         return movement;
@@ -67,10 +67,10 @@ public class DataAccess implements DataCollection {
     public ContentValues insertValues(Movement movement) {
         ContentValues values = new ContentValues();
         values.put(SqliteContract.MovementTable.DATE_COLUMN, movement.getDate().toString());
-        values.put(SqliteContract.MovementTable.MOVEMENT_TYPE_COLUMN, movement.getMovementType().toString());
-        values.put(SqliteContract.MovementTable.COORDINATE_COLUMN, movement.getCoordinates());
+        values.put(SqliteContract.MovementTable.COORDINATE_COLUMN, movement.getCoordinates().toString());
         values.put(SqliteContract.MovementTable.LOCATION_ADDRESS_COLUMN, movement.getAddress());
         values.put(SqliteContract.MovementTable.TIME_ELAPSED_COLUMN, movement.getTimeSpent());
+        values.put(SqliteContract.MovementTable.MOVEMENT_TYPE_COLUMN, movement.getMovementType().toString());
         return values;
 
     }
@@ -114,7 +114,7 @@ public class DataAccess implements DataCollection {
     public List<Movement> getByDate(DateTime dateTime, Selection selection) {
         String querySelection = SqliteContract.MovementTable.DATE_COLUMN + " = ?";
 
-        String[] args = {selection.toString()};
+        String[] args = {dateTime.toString()};
 
         String sortOrder = SqliteContract.MovementTable._ID;
 
@@ -125,7 +125,7 @@ public class DataAccess implements DataCollection {
     public List<Movement> getByLocationAddress(String address, Selection selection) {
         String querySelection = SqliteContract.MovementTable.LOCATION_ADDRESS_COLUMN + " = ?";
 
-        String[] args = {selection.toString()};
+        String[] args = {address};
 
         String sortOrder = SqliteContract.MovementTable._ID;
 
@@ -134,9 +134,10 @@ public class DataAccess implements DataCollection {
 
     @Override
     public List<Movement> getByCordinates(String coordinates, Selection selection) {
+
         String querySelection = SqliteContract.MovementTable.COORDINATE_COLUMN + " = ?";
 
-        String[] args = {selection.toString()};
+        String[] args = {coordinates};
 
         String sortOrder = SqliteContract.MovementTable._ID;
 
@@ -146,7 +147,7 @@ public class DataAccess implements DataCollection {
     public List<Movement> getByMovementType(Movement.Type movmentType, Selection selection) {
         String querySelection = SqliteContract.MovementTable.MOVEMENT_TYPE_COLUMN + " = ?";
 
-        String[] args = {selection.toString()};
+        String[] args = {movmentType.toString()};
 
         String sortOrder = SqliteContract.MovementTable._ID;
 
@@ -155,7 +156,7 @@ public class DataAccess implements DataCollection {
 
     @Override
     public List<Movement> listAll(Selection selection) {
-        return null;
+        return query(null, null, null, null);
     }
 
     public String[] columnNames() {
@@ -163,9 +164,9 @@ public class DataAccess implements DataCollection {
                 SqliteContract.MovementTable._ID,
                 SqliteContract.MovementTable.DATE_COLUMN,
                 SqliteContract.MovementTable.COORDINATE_COLUMN,
-                SqliteContract.MovementTable.COORDINATE_COLUMN,
                 SqliteContract.MovementTable.LOCATION_ADDRESS_COLUMN,
                 SqliteContract.MovementTable.TIME_ELAPSED_COLUMN,
+                SqliteContract.MovementTable.MOVEMENT_TYPE_COLUMN,
         };
         return columns;
     }
