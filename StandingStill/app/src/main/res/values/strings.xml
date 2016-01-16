@@ -10,4 +10,9 @@
     <string name="unknown">Unknown Activity</string>
     <string name="running">Running</string>
     <string name="unidentifiable_activity">Unidentifiable Movement</string>
+    <string name="action_delay">Set Delay</string>
+    <string name="preference_default">0:5</string>
+    <string name="preference_key">delay_key</string>
+    <string name="preference_title">TIme Delay</string>
+    <string name="preference_summary">Minimum time set for tracked location to be recorded</string>
 </resources>
