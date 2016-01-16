@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.andela.standingstill.Utility.PreferenceSettings
+        android:key="@string/preference_key"
+        android:title="@string/preference_title"
+        android:summary="@string/preference_summary"
+        android:defaultValue="@string/preference_default"/>
+</PreferenceScreen>
