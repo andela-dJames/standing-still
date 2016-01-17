@@ -21,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andela.standingstill.R;
+import com.andela.standingstill.Utility.Settings;
+import com.andela.standingstill.Utility.TimeDuration;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
     private LocationTimer timer;
 
     private String userActivity;
-    private DetectedActivity detectedActivity;
+    private String detectedActivity;
     //private Address userAddress;
     private ActivityChangeListener listener;
     private String address;
@@ -69,8 +71,18 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         setSupportActionBar(toolbar);
         initializeComponents();
         broadcastReceiver = new ActivityBroadcastReceiver();
+        retreiveSettings();
 
     }
+
+    public void retreiveSettings() {
+        Settings settings = new Settings(this);
+        String val = settings.retreiveSettings();
+        TimeDuration duration = settings.parseTimeDuration(val);
+        System.out.print(duration.convertToMills());
+        Log.d(TAG, String.valueOf(duration.convertToMills()));
+    }
+
 
 
     private void initializeComponents() {
@@ -131,10 +143,12 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         timer = new LocationTimer(watch.getStartTime(), 100);
         timer.start();
         requestUpdates();
-        Log.d(TAG, address);
+//        Log.d(TAG, address);
         //getAddreess();
+        detectedActivity = userActivity;
         latitude = googleLocationService.getLatitude();
         longitude = googleLocationService.getLongitude();
+        retreiveSettings();
 //        String name  = userAddress.getCountryname(googleLocationService.getLatitude(), googleLocationService.getLongitude());
         //Log.d(TAG, name);
 //        Log.d(TAG, googleLocationService.getUserActivity() + " " + googleLocationService.getLatitude());
@@ -221,7 +235,8 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent settingsIntent = new Intent(this, PreferenceSettingsActivity.class);
+            startActivity(settingsIntent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -254,6 +269,12 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
             String hour = watch.hourToString();
             secondsDisplay.setText(sec);
             minuteDisplay.setText(min);
+            if (detectedActivity.equals(userActivity)){
+                Log.d(TAG, "SameActivity");
+            }
+            else {
+                Log.d(TAG, "Changed Activity");
+            }
 
         }
 
