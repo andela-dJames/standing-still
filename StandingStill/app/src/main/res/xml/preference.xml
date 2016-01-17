@@ -4,5 +4,5 @@
         android:key="@string/preference_key"
         android:title="@string/preference_title"
         android:summary="@string/preference_summary"
-        android:defaultValue="@string/preference_default"/>
+        android:defaultValue="0:5"/>
 </PreferenceScreen>
