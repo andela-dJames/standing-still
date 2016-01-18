@@ -9,11 +9,16 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +27,7 @@ import android.widget.TextView;
 
 import com.andela.standingstill.R;
 import com.andela.standingstill.Utility.Settings;
+import com.andela.standingstill.Utility.SinificantActivity;
 import com.andela.standingstill.Utility.TimeDuration;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -37,10 +43,9 @@ import com.andela.standingstill.service.ActivityChangeListener;
 import com.andela.standingstill.service.DetectedActivities;
 import com.andela.standingstill.service.GoogleLocationService;
 
-public class MainActivity extends AppCompatActivity implements ResultCallback<Status> {
+public class MainActivity extends AppCompatActivity implements ResultCallback<Status>, NavigationView.OnNavigationItemSelectedListener {
 
     protected static final String TAG = "Main Activity";
-
     private TextView hourDisplay;
     private TextView minuteDisplay;
     private TextView secondsDisplay;
@@ -50,7 +55,10 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
     private double longitude, latitude;
     private GoogleLocationService googleLocationService;
     private ActivityBroadcastReceiver broadcastReceiver;
-
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+    private Toolbar toolbar;
     private StopWatch watch;
 
     private LocationTimer timer;
@@ -60,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
     //private Address userAddress;
     private ActivityChangeListener listener;
     private String address;
+    private Settings settings;
 
 
 
@@ -67,8 +76,7 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        addActionbar();
         initializeComponents();
         broadcastReceiver = new ActivityBroadcastReceiver();
         retreiveSettings();
@@ -83,9 +91,31 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         Log.d(TAG, String.valueOf(duration.convertToMills()));
     }
 
+    public void checkInternetConnectivity(){
+        if (!settings.isConnected()){
+           settings.requestConnectivity();
+        }
+    }
+
+    private void addActionbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
+    }
 
 
     private void initializeComponents() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.main_activity_drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.main_activity_navigation_view);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_closed);
+        drawerToggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+        View drawerHeader = LayoutInflater.from(this).inflate(R.layout.main_activity_navigation_view_header, null);
+        navigationView.addHeaderView(drawerHeader);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         parent = (RelativeLayout) findViewById(R.id.parent_view);
         hourDisplay = (TextView) findViewById(R.id.hourText);
@@ -98,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         googleLocationService = new GoogleLocationService(MainActivity.this);
         address = "";
         getAddreess();
+        settings = new Settings(this);
 
     }
 
@@ -135,6 +166,18 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
     }
 
     public void startRecording(View v) {
+        if (!settings.isConnected()){
+            settings.requestConnectivity();
+            return;
+        }
+        if (!settings.isGpsEnabled()){
+            settings.requestGPSSettings();
+            return;
+        }
+//        if (!googleLocationService.isConnected()){
+//            settings.requestGooglePlayServices();
+//            return;
+//        }
         changeIcon();
         isRecording = true;
         Snackbar.make(v, "Recording has started", Snackbar.LENGTH_LONG)
@@ -174,6 +217,12 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
                 new IntentFilter(Constants.BROADCAST_ACTION));
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
     }
 
     public void stopRecording(View v) {
@@ -248,6 +297,17 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
 
     }
 
+    public void resetTimer() {
+        if (isRecording){
+            timer.cancel();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        return false;
+    }
+
     public class LocationTimer extends CountDownTimer {
 
         /**
@@ -292,22 +352,19 @@ public class MainActivity extends AppCompatActivity implements ResultCallback<St
                     intent.getParcelableArrayListExtra(Constants.ACTIVITY_EXTRA);
             ArrayList<DetectedActivity> mostprobableActivity = intent.getParcelableArrayListExtra(Constants.MOST_PROBABLE_ACTIVITY);
 
-            //userActivity = intent.getStringExtra(Constants.MOST_PROBABLE_ACTIVITY);
             userActivity = detectedActivityToString(mostprobableActivity.get(0).getType());
-            //Log.d(TAG, detectedActivities.toString());
-            String activity = "";
-
-            for (DetectedActivity detectedActivity: detectedActivities){
-                activity += detectedActivityToString(detectedActivity.getType()) + " "+ detectedActivity.getConfidence();
-                 //Log.d(TAG, userActivity);
-
-            }
 
         }
 
-        public void registerReceiver() {
+        public boolean isSignificant(String userActivity){
+
+            return userActivity.equals(SinificantActivity.ActivityType.STILL.getActivity())
+                    || userActivity.equals(SinificantActivity.ActivityType.IN_VEHICLE.getActivity())
+                    || userActivity.equals(SinificantActivity.ActivityType.ON_BICYCLE.getActivity())
+                    || userActivity.equals(SinificantActivity.ActivityType.WALKING.getActivity());
 
         }
+
     }
 
     public String detectedActivityToString(int activityType) {
