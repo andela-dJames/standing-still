@@ -32,4 +32,11 @@ public final class Constants {
     public static final long DETECTION_INTERVAL_IN_MILLISECONDS = 0;
 
     public static final String MOST_PROBABLE_ACTIVITY = PACKAGE_NAME + ".most probable Activity";
+    public static final String STILL = "Standing Still";
+    public static final String IN_VEHICLE = "Transport";
+    public static final String WALKING = "Walking";
+    public static final String ON_FOOT = "On foot";
+    public static final String RUNNING = "Running";
+    public static final String TILTING = "Tilting";
+    public static final String UKNOWN = "Unknown activities";
 }
