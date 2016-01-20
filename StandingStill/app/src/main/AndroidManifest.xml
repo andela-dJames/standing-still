@@ -23,11 +23,13 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".fragment.LocationFragment"
@@ -56,15 +58,6 @@
             android:exported="false" />
 
         <activity
-            android:name="checkpoint4.andela.com.standingstill.LocationActivity"
-            android:label="@string/title_activity_location"
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.andela.standingstill.activity.MainActivity" />
-        </activity>
-        <activity
             android:name=".activity.AppLauncherActivity"
             android:label="@string/title_activity_app_launcher"
             android:theme="@style/AppTheme.NoActionBar" >
@@ -73,6 +66,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.RecordActivity"
+            android:label="@string/title_activity_record"
+            android:parentActivityName=".activity.AppLauncherActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <!--<meta-data-->
+                <!--android:name="android.support.PARENT_ACTIVITY"-->
+                <!--android:value="com.andela.standingstill.activity.AppLauncherActivity" />-->
         </activity>
     </application>
 
