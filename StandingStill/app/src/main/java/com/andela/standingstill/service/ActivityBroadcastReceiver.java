@@ -12,9 +12,6 @@ import java.util.ArrayList;
 
 import com.andela.standingstill.activity.Constants;
 
-/**
- * Created by andeladev on 13/01/2016.
- */
 public class ActivityBroadcastReceiver extends BroadcastReceiver {
 
     private String userActivity;
