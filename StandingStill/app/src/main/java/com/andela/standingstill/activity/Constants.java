@@ -38,5 +38,7 @@ public final class Constants {
     public static final String ON_FOOT = "On foot";
     public static final String RUNNING = "Running";
     public static final String TILTING = "Tilting";
-    public static final String UKNOWN = "Unknown activities";
+    public static final String UKNOWN = "Unknown Activity";
+    public static final String ON_BICYCLE = "On a bycycle";
+    public static final String UNIDENTIFIABLE_ACTIVITIES = "Unidentifiable activities";
 }
