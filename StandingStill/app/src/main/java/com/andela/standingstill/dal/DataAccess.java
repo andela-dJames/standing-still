@@ -6,11 +6,15 @@ import android.database.Cursor;
 import com.andela.standingstill.model.Movement;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * A class for performing CRUD operations
+ */
 public class DataAccess implements DataCollection {
 
     private SqliteDBHelper sqliteDBHelper;
@@ -19,17 +23,28 @@ public class DataAccess implements DataCollection {
         this.sqliteDBHelper = sqliteDBHelper;
     }
 
+    /**
+     * Insert into Database
+     * @param movement
+     * @return
+     */
     private long insert(Movement movement) {
         ContentValues values = insertValues(movement);
 
         return sqliteDBHelper.getDatabase().insert(SqliteContract.MovementTable.TABLE_NAME, null, values);
     }
 
+    /**
+     * Get Data from Cursor
+     * @param cursor
+     * @return
+     */
     private Movement getFromCusor(Cursor cursor) {
         Movement movement = new Movement();
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE, MMMM d, y");
 
         movement.setID((int) cursor.getLong(0));
-        movement.setDate(DateTime.parse(cursor.getString(SqliteContract.MovementTable.DATE_COLUMN_INDEX)));
+        movement.setDate(DateTime.parse(cursor.getString(SqliteContract.MovementTable.DATE_COLUMN_INDEX), formatter));
         movement.setCoordinates(cursor.getString(SqliteContract.MovementTable.COORDINATE_COLUMN_INDEX));
         movement.setAddress(cursor.getString(SqliteContract.MovementTable.LOCATION_ADDRESS_COLUMN_INDEX));
         movement.setTimeSpent(Long.parseLong(cursor.getString(SqliteContract.MovementTable.TIME_SPENT_ELAPSED_COLUMN_INDEX)));
@@ -37,6 +52,11 @@ public class DataAccess implements DataCollection {
         return movement;
     }
 
+    /**
+     * Update DB
+     * @param movement
+     * @return
+     */
     public int updateTable(Movement movement) {
         ContentValues values = insertValues(movement);
 
@@ -46,6 +66,14 @@ public class DataAccess implements DataCollection {
         return sqliteDBHelper.getDatabase().update(SqliteContract.MovementTable.TABLE_NAME, values, whereClause, whereArgs);
     }
 
+    /**
+     * Query Database for a record
+     * @param selection
+     * @param selectionargs
+     * @param groupBy
+     * @param sortOrder
+     * @return
+     */
     public List<Movement> query( String selection, String[] selectionargs, String groupBy, String sortOrder ) {
 
         Cursor cursor = sqliteDBHelper.getDatabase().query(SqliteContract.MovementTable.TABLE_NAME,
@@ -63,11 +91,16 @@ public class DataAccess implements DataCollection {
 
     }
 
-
-    public ContentValues insertValues(Movement movement) {
+    /**
+     * Create Content values
+     * @param movement
+     * @return
+     */
+    private ContentValues insertValues(Movement movement) {
         ContentValues values = new ContentValues();
-        values.put(SqliteContract.MovementTable.DATE_COLUMN, movement.getDate().toString());
-        values.put(SqliteContract.MovementTable.COORDINATE_COLUMN, movement.getCoordinates().toString());
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE, MMMM d, y");
+        values.put(SqliteContract.MovementTable.DATE_COLUMN, movement.getDate().toString(formatter));
+        values.put(SqliteContract.MovementTable.COORDINATE_COLUMN, movement.getCoordinates());
         values.put(SqliteContract.MovementTable.LOCATION_ADDRESS_COLUMN, movement.getAddress());
         values.put(SqliteContract.MovementTable.TIME_ELAPSED_COLUMN, movement.getTimeSpent());
         values.put(SqliteContract.MovementTable.MOVEMENT_TYPE_COLUMN, movement.getMovementType().toString());
@@ -75,7 +108,14 @@ public class DataAccess implements DataCollection {
 
     }
 
-    public Movement retrieve(String selection, String[] selectionargs, String sortOrder){
+    /**
+     * Retreive record
+     * @param selection
+     * @param selectionargs
+     * @param sortOrder
+     * @return
+     */
+    private Movement retrieve(String selection, String[] selectionargs, String sortOrder){
 
         Cursor cursor = sqliteDBHelper.getDatabase().query(SqliteContract.MovementTable.TABLE_NAME,
                 columnNames(), selection, selectionargs, null, null, sortOrder);
@@ -113,8 +153,10 @@ public class DataAccess implements DataCollection {
     @Override
     public List<Movement> getByDate(DateTime dateTime, Selection selection) {
         String querySelection = SqliteContract.MovementTable.DATE_COLUMN + " = ?";
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE, MMMM d, y");
 
-        String[] args = {dateTime.toString()};
+
+        String[] args = {dateTime.toString(formatter)};
 
         String sortOrder = SqliteContract.MovementTable._ID;
 
@@ -155,7 +197,7 @@ public class DataAccess implements DataCollection {
     }
 
     @Override
-    public List<Movement> listAll(Selection selection) {
+    public List<Movement> listAll() {
         return query(null, null, null, null);
     }
 
