@@ -16,6 +16,7 @@ import com.andela.standingstill.R;
 
 public class PreferenceSettings extends DialogPreference implements Preference.OnPreferenceChangeListener {
     public static final String DEFAULT_VALUE = "0:5";
+    private static final String TAG = "preference_settings";
     private TimePicker timePicker;
     protected TimeDuration timeDuration;
 
@@ -102,6 +103,7 @@ public class PreferenceSettings extends DialogPreference implements Preference.O
             try {
                 return new TimeDuration(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
             } catch (NumberFormatException e) {
+                Log.d(TAG, e.getMessage());
 
             }
         return new TimeDuration(0, 5);

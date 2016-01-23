@@ -7,30 +7,28 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.andela.standingstill.R;
 
-/**
- * Created by andeladev on 15/01/2016.
- */
+import org.joda.time.DateTime;
+
 public class Settings {
 
+    private static final String TAG = "Settings";
     private Context context;
-
-    private SharedPreferences sharedPreferences;
 
     public Settings(Context context) {
         this.context = context;
     }
 
-    public void saveSettings() {
-
-    }
-
+    /**
+     * Parse String to time Duration
+     * @param durationString
+     * @return
+     */
     public TimeDuration parseTimeDuration(String durationString) {
         String[] args = durationString.split(":");
         TimeDuration duration = null;
@@ -40,6 +38,7 @@ public class Settings {
         try {
             return new TimeDuration(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
         } catch (NumberFormatException e) {
+            Log.d(TAG, e.getMessage());
 
         }
         return new TimeDuration(0, 5);
@@ -64,12 +63,19 @@ public class Settings {
                 activeNetwork.isConnectedOrConnecting();
     }
 
+    /**
+     * Check if GPS is enabled
+     * @return
+     */
     public boolean isGpsEnabled() {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
+    /**
+     * Request permission to turn on GPS
+     */
     public void requestGPSSettings() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(R.string.gps_disabled)
@@ -88,6 +94,9 @@ public class Settings {
         dialog.show();
     }
 
+    /**
+     * Request permission to turn on Connectivity
+     */
     public void requestConnectivity() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(R.string.no_internet_connection)
@@ -106,6 +115,9 @@ public class Settings {
         dialog.show();
     }
 
+    /**
+     * Request permission to enable or update Google play services
+     */
     public void requestGooglePlayServices() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(R.string.common_google_play_services_enable_title)
@@ -123,6 +135,13 @@ public class Settings {
         AlertDialog dialog = builder.create();
 
         dialog.show();
+
+    }
+
+
+    public static boolean isToday(DateTime dateTime, DateTime today){
+
+        return dateTime.getYear() == today.getYear() && dateTime.getMonthOfYear() == today.getMonthOfYear() && dateTime.getDayOfMonth() == today.getDayOfMonth();
 
     }
 
