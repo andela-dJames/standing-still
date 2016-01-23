@@ -19,30 +19,15 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".activity.MainActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
-        <activity
             android:name=".fragment.LocationFragment"
             android:label="@string/title_activity_location_fragment"
-            android:parentActivityName=".activity.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.andela.standingstill.activity.MainActivity" />
         </activity>
         <activity
             android:name=".activity.PreferenceSettingsActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
 
             <!-- <intent-filter> -->
@@ -60,6 +45,7 @@
         <activity
             android:name=".activity.AppLauncherActivity"
             android:label="@string/title_activity_app_launcher"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -72,9 +58,15 @@
             android:label="@string/title_activity_record"
             android:parentActivityName=".activity.AppLauncherActivity"
             android:theme="@style/AppTheme.NoActionBar" >
-            <!--<meta-data-->
-                <!--android:name="android.support.PARENT_ACTIVITY"-->
-                <!--android:value="com.andela.standingstill.activity.AppLauncherActivity" />-->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.andela.standingstill.activity.AppLauncherActivity" />
+        </activity>
+        <activity
+            android:name=".activity.DisplayRecordActivity"
+            android:label="@string/title_activity_main2"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 
