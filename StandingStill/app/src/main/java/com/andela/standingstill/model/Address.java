@@ -2,12 +2,13 @@ package com.andela.standingstill.model;
 
 import android.app.Activity;
 import android.location.Geocoder;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.List;
 
-
+/**
+ * A class that Represents an Address
+ */
 public class Address {
 
     private Activity activity;
@@ -37,7 +38,6 @@ public class Address {
             android.location.Address address = addressList.get(0);
 
           country =   address.getThoroughfare() + ", "+ address.getSubLocality();
-            Log.d("TAG", country);
         }
 
         return country;
