@@ -2,6 +2,10 @@ package com.andela.standingstill.timer;
 
 import android.os.Handler;
 
+/**
+ * A StopWatch
+ */
+
 public class StopWatch {
 
     private long hr;
@@ -27,6 +31,9 @@ public class StopWatch {
         }
     };
 
+    /**
+     * Start the stopwatch
+     */
     public void start() {
         startTime = System.currentTimeMillis();
 
@@ -35,6 +42,9 @@ public class StopWatch {
 
     }
 
+    /**
+     * Stop the stopwatch
+     */
     public void stop() {
         startTime = System.currentTimeMillis();
         stopped = true;
@@ -46,13 +56,21 @@ public class StopWatch {
         handler = new Handler();
     }
 
-    public void updateTimer(float time) {
+    /**
+     * Update the timer
+     * @param time
+     */
+    private void updateTimer(float time) {
         sec = (long) time / 1000;
         min = sec / 60;
         hr = min / 60;
 
     }
 
+    /**
+     *
+     * @return string value of seconds
+     */
     public String secondsToString() {
         sec = sec % 60;
         seconds=String.valueOf(sec);
@@ -91,6 +109,11 @@ public class StopWatch {
         return hour;
     }
 
+    /**
+     * Get the stime spent
+     * @param time
+     * @return
+     */
     public String timeSpent(long time) {
         String initial = "";
         String message = "";
@@ -121,7 +144,6 @@ public class StopWatch {
 
         return message;
     }
-    
 
     public String getHour() {
         return hour;
@@ -148,7 +170,10 @@ public class StopWatch {
     }
 
 
-
+    /**
+     * get the statr time
+     * @return
+     */
     public long getStartTime() {
         return startTime;
     }
@@ -157,6 +182,10 @@ public class StopWatch {
         this.startTime = startTime;
     }
 
+    /**
+     * get the elapsed time
+     * @return
+     */
     public long getElapsedTime() {
         return elapsedTime;
     }
