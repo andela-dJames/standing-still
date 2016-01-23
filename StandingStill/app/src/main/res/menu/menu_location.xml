@@ -4,4 +4,8 @@
     tools:context="com.andela.standingstill.fragment.LocationFragment">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/movements_fragment_action_choose_day"
+        android:title="@string/action_choose_day"
+        android:icon="@drawable/ic_action_date"
+        app:showAsAction="ifRoom" />
 </menu>

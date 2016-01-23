@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/activity_horizontal_margin"
+    android:gravity="center"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/colorPrimaryDark">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_place_list"
+            android:id="@+id/place_icon"
+            />
+        <LinearLayout
+            android:paddingLeft="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/address_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Address"
+                android:textColor="#ffffff"
+                android:fontFamily="san-serif-bold"
+                android:textSize="24dp"/>
+            <TextView
+                android:id="@+id/total_time_text"
+                android:layout_width="wrap_content"
+                android:textColor="#ffffff"
+                android:layout_height="wrap_content"
+                android:text="30 mins"
+                android:textSize="16dp"/>
+
+        </LinearLayout>
+        <TextView
+            android:textColor="#ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/no_items"
+            android:text="NO ITEMS"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

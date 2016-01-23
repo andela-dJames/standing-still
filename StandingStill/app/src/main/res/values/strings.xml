@@ -4,7 +4,7 @@
     <string name="title_activity_location_fragment">LocationFragment</string>
     <string name="still">Standing Still</string>
     <string name="in_vehicle">Transport</string>
-    <string name="walking">walking</string>
+    <string name="walking">Walking</string>
     <string name="on_bicycle">On a bicycle</string>
     <string name="on_foot">On foot</string>
     <string name="unknown">Unknown Activity</string>
@@ -15,4 +15,21 @@
     <string name="preference_key">delay_key</string>
     <string name="preference_title">TIme Delay</string>
     <string name="preference_summary">Minimum time set for tracked location to be recorded</string>
+    <string name="gps_disabled">GPS device is turned off</string>
+    <string name="enable_gps">Go to GPS settings</string>
+    <string name="no_internet_connection">Internet Connectivity is Unavailable</string>
+    <string name="check_internet_settings">Check Connectivity</string>
+    <string name="drawer_open">Drawer Opened</string>
+    <string name="drawer_closed">Drawer Closed</string>
+    <string name="title_activity_location">LocationActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_app_launcher">My Tracks</string>
+    <string name="stop_tracker">tracking has stopped</string>
+    <string name="start_tracker">tracking has started</string>
+    <string name="title_activity_record">Today</string>
+    <string name="timeline">Timeline</string>
+    <string name="title_activity_main2">Locations</string>
+    <string name="action_choose_day">choose day</string>
+    <string name="today">Today</string>
 </resources>
