@@ -23,7 +23,7 @@ public interface DataCollection {
 
     public List<Movement> getByMovementType(Movement.Type movmentType, Selection selection);
 
-    public List<Movement> listAll(Selection selection);
+    public List<Movement> listAll();
 
     enum Selection {
         ID,
