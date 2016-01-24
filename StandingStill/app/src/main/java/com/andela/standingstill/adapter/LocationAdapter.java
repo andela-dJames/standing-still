@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andela.standingstill.R;
@@ -44,13 +45,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public void onBindViewHolder(LocationViewHolder holder, int position) {
         if (places.isEmpty()){
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.1f);
             holder.placeIcon.setVisibility(View.INVISIBLE);
             holder.totalTimeView.setVisibility(View.INVISIBLE);
             holder.addressView.setVisibility(View.INVISIBLE);
-            holder.noItemsView.setLayoutParams(new ViewGroup.LayoutParams(params));
-            holder.noItemsView.setTextSize(10f);
+            holder.noItemsView.setTextSize(100f);
             holder.noItemsView.setText("No Places Record");
+            holder.parent.addView(holder.noItemsView);
 
         }
         else {
@@ -75,6 +75,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     }
 
     public class LocationViewHolder extends RecyclerView.ViewHolder{
+        RelativeLayout parent;
 
         ImageView placeIcon;
 
@@ -86,10 +87,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
         public LocationViewHolder(View itemView) {
             super(itemView);
+            parent = (RelativeLayout) itemView.findViewById(R.id.parent_layout);
             placeIcon = (ImageView) itemView.findViewById(R.id.place_icon);
             addressView = (TextView) itemView.findViewById(R.id.address_text);
             totalTimeView = (TextView) itemView.findViewById(R.id.total_time_text);
-            noItemsView = (TextView) itemView.findViewById(R.id.no_items);
+            noItemsView = new TextView(context);
+
         }
     }
 }

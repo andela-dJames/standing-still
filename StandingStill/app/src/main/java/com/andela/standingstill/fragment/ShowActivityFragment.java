@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andela.standingstill.R;
@@ -40,10 +42,12 @@ public class ShowActivityFragment extends Fragment implements DatePickerDialog.O
     private LocationAdapter adapter;
     private List<Place> places;
     private List<Movement>movements;
-    DateTime date;
+    private DateTime date;
     private SqliteDBHelper helper;
     private DataAccess access;
     private TextView titleText;
+    private Place place;
+    private TextView noItems;
 
     public ShowActivityFragment() {
         setHasOptionsMenu(true);
@@ -67,18 +71,16 @@ public class ShowActivityFragment extends Fragment implements DatePickerDialog.O
         recyclerView.addItemDecoration(new ItemDivider(getContext()));
         recyclerView.setAdapter(adapter);
         titleText = (TextView) v.findViewById(R.id.title_text);
+
     }
 
     public void getLocations() {
-        Place place = new Place();
-        place.setTimeSpent(300000);
-        place.setAddress("2/3, Funsho Street");
-        places = new ArrayList<>();
-        //places.add(place);
+        date = new DateTime();
+        place = new Place();
         movements = new ArrayList<>();
        helper = new SqliteDBHelper(getContext());
         access = new DataAccess(helper);
-        movements = access.getByDate(DateTime.now(), null);
+        movements = access.getByDate(date, null);
         places = place.getPlaces(movements);
     }
 
@@ -86,26 +88,40 @@ public class ShowActivityFragment extends Fragment implements DatePickerDialog.O
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         date = new DateTime(year, monthOfYear + 1, dayOfMonth, 0, 0);
+        Log.d("TAG", date.toString());
 
         movements = access.getByDate(date, null);
         if (Settings.isToday(date, DateTime.now())){
             titleText.setText(R.string.today);
         }
-
         DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE, MMMM d, y");
         titleText.setText(date.toString(formatter));
+        List<Movement> newMovements = access.getByDate(date, null);
+        List<Place> newplaces = place.getPlaces(newMovements);
+        places.clear();
+        adapter.notifyDataSetChanged();
+        for (Place place : newplaces){
+            int index = findIndex(place);
+            if (index < 0){
+                places.add(place);
+                adapter.notifyItemInserted(places.size() -1 );
+            }
+            else {
+                places.set(index, place);
+                adapter.notifyItemChanged(index);
+            }
 
-
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_menu, menu);
+        inflater.inflate(R.menu.menu_location, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_choose_date){
+        if (item.getItemId() == R.id.movements_fragment_action_choose_day){
             date = DateTime.now();
             DatePickerFragment fragment = new DatePickerFragment();
             Bundle args = new Bundle();
@@ -120,6 +136,15 @@ public class ShowActivityFragment extends Fragment implements DatePickerDialog.O
         }
         return true;
 
+    }
+    
+    private int findIndex(Place place) {
+        for (int i = 0; i < places.size()-1; i++) {
+            if (place.getAddress().equals(places.get(i).getAddress())){
+                return i;
+            }
+        }
+        return -1;
     }
 
 
