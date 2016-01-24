@@ -137,7 +137,7 @@ public class ShowActivityFragment extends Fragment implements DatePickerDialog.O
         return true;
 
     }
-    
+
     private int findIndex(Place place) {
         for (int i = 0; i < places.size()-1; i++) {
             if (place.getAddress().equals(places.get(i).getAddress())){

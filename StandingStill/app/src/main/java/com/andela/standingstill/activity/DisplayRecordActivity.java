@@ -13,15 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.andela.standingstill.R;
-import com.andela.standingstill.fragment.DatePickerFragment;
 import com.andela.standingstill.fragment.ShowActivityFragment;
 
 import org.joda.time.DateTime;
 
 public class DisplayRecordActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private ShowActivityFragment.DateSetListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
