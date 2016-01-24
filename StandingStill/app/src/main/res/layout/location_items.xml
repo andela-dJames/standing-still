@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:paddingTop="@dimen/activity_horizontal_margin"
     android:gravity="center"
+    android:id="@+id/parent_layout"
     android:layout_gravity="center_horizontal"
     android:background="@color/colorPrimaryDark">
 
@@ -43,6 +44,7 @@
             android:textColor="#ffffff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:id="@+id/no_items"
             android:text="NO ITEMS"/>
 
