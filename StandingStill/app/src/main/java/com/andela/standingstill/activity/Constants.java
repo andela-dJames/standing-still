@@ -7,7 +7,7 @@ import com.google.android.gms.location.DetectedActivity;
  */
 public final class Constants {
 
-    public static final String PACKAGE_NAME = "com.andela.checkpoint4";
+    public static final String PACKAGE_NAME = "com.andela.standingstill";
 
     public static final String BROADCAST_ACTION = PACKAGE_NAME + ".broadcast action";
 
@@ -32,4 +32,13 @@ public final class Constants {
     public static final long DETECTION_INTERVAL_IN_MILLISECONDS = 0;
 
     public static final String MOST_PROBABLE_ACTIVITY = PACKAGE_NAME + ".most probable Activity";
+    public static final String STILL = "Standing Still";
+    public static final String IN_VEHICLE = "Transport";
+    public static final String WALKING = "Walking";
+    public static final String ON_FOOT = "On foot";
+    public static final String RUNNING = "Running";
+    public static final String TILTING = "Tilting";
+    public static final String UKNOWN = "Unknown Activity";
+    public static final String ON_BICYCLE = "On a bycycle";
+    public static final String UNIDENTIFIABLE_ACTIVITIES = "Unidentifiable activities";
 }

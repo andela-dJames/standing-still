@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import com.andela.standingstill.activity.Constants;
 
 /**
- * Created by andeladev on 10/01/2016.
+ * An Intent Service class that updates the main Activity int the background
  */
 public class DetectedActivities extends IntentService {
 

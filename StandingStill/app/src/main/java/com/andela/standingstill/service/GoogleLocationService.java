@@ -3,8 +3,6 @@ package com.andela.standingstill.service;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -18,8 +16,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import com.andela.standingstill.model.Address;
-import com.andela.standingstill.activity.Constants;
-
 
 public class GoogleLocationService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -34,8 +30,6 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
 
     private double longitude;
     private double latitude;
-    private ActivityBroadcastReceiver activityBroadcastReceiver;
-    private String userActivity;
     private ActivityChangeListener listener;
     private Address userAddress;
     private String address;
@@ -45,7 +39,6 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
         buildApiClient();
         longitude = 0;
         latitude = 0;
-        activityBroadcastReceiver = new ActivityBroadcastReceiver();
         userAddress = new Address(activity);
         address = "";
 
@@ -61,9 +54,7 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
                 .addOnConnectionFailedListener(this)
                 .build();
 
-
     }
-
     @Override
     public void onConnected(Bundle bundle) {
         locationRequest = LocationRequest.create();
@@ -74,31 +65,17 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-
-
     }
-
-        public void requestUpdates() {
-
-        ActivityRecognition.ActivityRecognitionApi
-                .requestActivityUpdates(googleApiClient,
-                        Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
-                        getActivityPendingIntent()).setResultCallback(this);
-
-    }
-
-    private PendingIntent getActivityPendingIntent() {
-        Intent intent = new Intent(activity, DetectedActivities.class);
-        return PendingIntent.getService(activity,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-    }
-
     public double getLongitude() {
         return longitude;
     }
 
     public double getLatitude() {
         return this.latitude;
+    }
+
+    public String getCoordinates() {
+        return longitude + ":" +latitude;
     }
 
     public void setLongitude(double longitude) {
@@ -117,7 +94,6 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
     public void onConnectionSuspended(int i) {
 
     }
-
 
     @Override
     public void onLocationChanged(Location location) {
@@ -157,11 +133,6 @@ public class GoogleLocationService implements GoogleApiClient.ConnectionCallback
     public boolean isConnected() {
         return googleApiClient.isConnected();
     }
-
-    public String getUserActivity() {
-        return userActivity;
-    }
-
     @Override
     public void onResult(Status status) {
 
