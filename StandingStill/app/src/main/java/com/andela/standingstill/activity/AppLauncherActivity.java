@@ -338,14 +338,14 @@ public class AppLauncherActivity extends AppCompatActivity
         if (id == R.id.nav_location) {
             Intent i = new Intent(this, DisplayRecordActivity.class);
             startActivity(i);
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_timeline) {
+            launch(RecordActivity.class);
 
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_tracker) {
             if (getApplication() == null){
-                Intent newIntent = new Intent(this, AppLauncherActivity.class);
-                startActivity(newIntent);
+                launch(AppLauncherActivity.class);
             }
 
         } else if (id == R.id.nav_share) {
@@ -609,5 +609,11 @@ public class AppLauncherActivity extends AppCompatActivity
         elapsedtime = savedInstanceState.getLong(ELAPSED_TIME);
         initialActivity = savedInstanceState.getString(INITIAL_ACTIVITY);
         userActivity = savedInstanceState.getString(USER_ACTIVITY);
+    }
+
+    private void launch(Class type){
+        Intent intent = new Intent(this, type);
+        startActivity(intent);
+
     }
 }
