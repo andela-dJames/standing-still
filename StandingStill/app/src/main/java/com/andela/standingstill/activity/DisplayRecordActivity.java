@@ -21,6 +21,8 @@ import org.joda.time.DateTime;
 public class DisplayRecordActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private ShowActivityFragment.DateSetListener listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,21 +63,14 @@ public class DisplayRecordActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        DateTime date = DateTime.now();
+        final DateTime date = DateTime.now();
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             Intent settingsIntent = new Intent(this, PreferenceSettingsActivity.class);
             startActivity(settingsIntent);
         }
         if (item.getItemId() == R.id.action_choose_date){
-            DatePickerFragment dialog = new DatePickerFragment();
-            DatePickerFragment fragment = new DatePickerFragment();
-            Bundle args = new Bundle();
-            args.putString(DatePickerFragment.DEFAULT, date.toString());
 
-            fragment.setArguments(args);
-
-            fragment.show(getFragmentManager(), "dialogpicker");
 
         }
 
@@ -94,7 +89,9 @@ public class DisplayRecordActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment)
                     .commit();
 
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_timeline) {
+            Intent intent = new Intent(this, RecordActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_slideshow) {
 
