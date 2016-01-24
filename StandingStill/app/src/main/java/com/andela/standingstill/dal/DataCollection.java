@@ -11,19 +11,19 @@ import java.util.List;
  */
 public interface DataCollection {
 
-    public long save(Movement movement);
+    long save(Movement movement);
 
-    public Movement getByID(int id);
+    Movement getByID(int id);
 
-    public List<Movement> getByDate(DateTime dateTime, Selection selection );
+    List<Movement> getByDate(DateTime dateTime, Selection selection);
 
-    public List<Movement> getByLocationAddress(String address, Selection selection);
+    List<Movement> getByLocationAddress(String address, Selection selection);
 
-    public List<Movement> getByCordinates(String coordinates, Selection selection);
+    List<Movement> getByCordinates(String coordinates, Selection selection);
 
-    public List<Movement> getByMovementType(Movement.Type movmentType, Selection selection);
+    List<Movement> getByMovementType(Movement.Type movmentType, Selection selection);
 
-    public List<Movement> listAll();
+    List<Movement> listAll();
 
     enum Selection {
         ID,
