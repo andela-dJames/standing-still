@@ -31,7 +31,7 @@ This feature lists all the user's location by day. It can be accessed from the n
 This feature groups similar locations together and the total time spent in that location and can be accessed from the navigation bar by clicking locations.
 
 ##Screenshots
-![start Screen](screenshots/start_screen.png)
+![start Screen](screenshots/screenshots.png)
 
 ## Requirement
 The app reqiures the following
