@@ -15,9 +15,9 @@ This feature allows a user to be able to set the minimum time required for a loc
 This feature saves the user activity and location provided the the time spent is equall or greater than the delay time set by the user.
 The `GoogleApiClient` calls the `onLocationChanged` callback which in turn returns the user location at certain intervals.
 `getAddress` calls a listener that uses `GeoCoder` to get the current address of the user.
-The `ActivityBroadCastReceiver` Requests for update of the user activity and the `IntentService` returns it in the background.
+    The `ActivityBroadCastReceiver` Requests for update of the user activity and the `IntentService` returns it in the background.
 The App Recieves the updates and checks if the user activity has changed. `hasChanged` compares the newly recived update with previous one to determine a change in activity. `shouldSave` checks if the `timeSpent` of the previous activity meets the minimum required time set by the user.
-The `save` method initializes the DB and calls the `getMovement` which sets all the properties of the user movement and saves it in an SQLite DB Whose contracts, method and helper are defined in the `com.andela.standinstill.dal` package
+    The `save` method initializes the DB and calls the `getMovement` which sets all the properties of the user movement and saves it in an SQLite DB Whose contracts, method and helper are defined in the `com.andela.standinstill.dal` package
 
 ## Movement Defined
 The `Movement` class defines an `enum` of activity types.
