@@ -48,7 +48,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             holder.placeIcon.setVisibility(View.INVISIBLE);
             holder.totalTimeView.setVisibility(View.INVISIBLE);
             holder.addressView.setVisibility(View.INVISIBLE);
-            
+
 
         }
         else {
