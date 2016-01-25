@@ -48,9 +48,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             holder.placeIcon.setVisibility(View.INVISIBLE);
             holder.totalTimeView.setVisibility(View.INVISIBLE);
             holder.addressView.setVisibility(View.INVISIBLE);
-            holder.noItemsView.setTextSize(100f);
-            holder.noItemsView.setText("No Places Record");
-            holder.parent.addView(holder.noItemsView);
+            
 
         }
         else {
@@ -58,7 +56,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             holder.placeIcon.setImageResource(R.drawable.ic_place_list);
             holder.addressView.setText(place.getAddress());
             holder.totalTimeView.setText(place.getTimeSpentToString());
-            holder.noItemsView.setVisibility(View.INVISIBLE);
+
 
         }
 
@@ -91,8 +89,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             placeIcon = (ImageView) itemView.findViewById(R.id.place_icon);
             addressView = (TextView) itemView.findViewById(R.id.address_text);
             totalTimeView = (TextView) itemView.findViewById(R.id.total_time_text);
-            noItemsView = new TextView(context);
-
         }
     }
 }
