@@ -93,8 +93,7 @@ public class DisplayRecordActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_tracker) {
-            Intent intent = new Intent(this, AppLauncherActivity.class);
-            startActivity(intent);
+            super.onBackPressed();
 
 
         } else if (id == R.id.nav_share) {

@@ -33,7 +33,6 @@ public class PreferenceSettingsActivity extends PreferenceActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            //setSupportActionBar(actionBar);
 
         }
 
@@ -54,15 +53,10 @@ public class PreferenceSettingsActivity extends PreferenceActivity {
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                if (!super.onMenuItemSelected(featureId, item)){
-                    NavUtils.navigateUpFromSameTask(this);
-                }
-                return true;
-            default:
-                break;
 
+        if ( item.getItemId() == android.R.id.home && !super.onMenuItemSelected(featureId, item)){
+            NavUtils.navigateUpFromSameTask(this);
+            return true;
         }
         return super.onMenuItemSelected(featureId, item);
     }

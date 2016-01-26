@@ -13,7 +13,9 @@ import android.widget.TimePicker;
 
 import com.andela.standingstill.R;
 
-
+/**
+ * Preference Settings class for building settings Dialog
+ */
 public class PreferenceSettings extends DialogPreference implements Preference.OnPreferenceChangeListener {
     public static final String DEFAULT_VALUE = "0:5";
     private static final String TAG = "preference_settings";
@@ -94,6 +96,11 @@ public class PreferenceSettings extends DialogPreference implements Preference.O
         return true;
     }
 
+    /**
+     * Parse a string time value to a TimeDuration Object
+     * @param durationString
+     * @return
+     */
     public TimeDuration parseTimeDuration(String durationString) {
         String[] args = durationString.split(":");
        TimeDuration duration = null;
@@ -109,6 +116,9 @@ public class PreferenceSettings extends DialogPreference implements Preference.O
         return new TimeDuration(0, 5);
     }
 
+    /**
+     * Retrieve the user defined settings
+     */
     public void retreiveSettings() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String val = pref.getString(DEFAULT_VALUE, "0:5");

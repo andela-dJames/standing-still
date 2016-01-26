@@ -138,7 +138,12 @@ public class Settings {
 
     }
 
-
+    /**
+     * Checks if the date is today or not.
+     * @param dateTime the time to check
+     * @param today today's date
+     * @return bolean
+     */
     public static boolean isToday(DateTime dateTime, DateTime today){
 
         return dateTime.getYear() == today.getYear() && dateTime.getMonthOfYear() == today.getMonthOfYear() && dateTime.getDayOfMonth() == today.getDayOfMonth();

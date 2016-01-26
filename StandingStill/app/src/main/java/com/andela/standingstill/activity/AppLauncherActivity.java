@@ -195,9 +195,6 @@ public class AppLauncherActivity extends AppCompatActivity
         }
         googleLocationService.disconnect();
         Intent intent = new Intent(this, RecordActivity.class);
-        //Bundle bundle = new Bundle();
-        //bundle.putParcelable(USER_MOVEMENT, getUserMovement());
-        //intent.putExtras(bundle);
         startActivity(intent);
 
     }
@@ -339,7 +336,7 @@ public class AppLauncherActivity extends AppCompatActivity
             Intent i = new Intent(this, DisplayRecordActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_timeline) {
-            launch(RecordActivity.class);
+            launchWithResult(RecordActivity.class);
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -392,12 +389,6 @@ public class AppLauncherActivity extends AppCompatActivity
             minuteDisplay.setText(min);
             hourDisplay.setText(hour);
             elapsedtime = watch.getElapsedTime();
-//            if (detectedActivity.equals(userActivity)){
-//                Log.d(TAG, "SameActivity");
-//            }
-//            else {
-//                Log.d(TAG, "Changed Activity");
-//            }
 
         }
 
@@ -615,5 +606,15 @@ public class AppLauncherActivity extends AppCompatActivity
         Intent intent = new Intent(this, type);
         startActivity(intent);
 
+    }
+
+    private void launchWithResult(Class type){
+        Intent intent = new Intent(this, type);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

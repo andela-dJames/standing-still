@@ -161,7 +161,6 @@ public class TestDB extends AndroidTestCase {
 
         dataAccess.save(movement);
         dataAccess.save(movement2);
-        //Movement myMovement = dataAccess.getByID(1);
         List<Movement> movements = dataAccess.getByMovementType(Movement.Type.WALKING, DataCollection.Selection.LOCATION_ADDRESS);
 
         assertEquals(1, movements.size());

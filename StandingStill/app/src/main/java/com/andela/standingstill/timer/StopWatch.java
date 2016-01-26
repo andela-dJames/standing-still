@@ -112,7 +112,7 @@ public class StopWatch {
     /**
      * Get the stime spent
      * @param time
-     * @return
+     * @return timeStent
      */
     public String timeSpent(long time) {
         String initial = "";
@@ -171,7 +171,7 @@ public class StopWatch {
 
 
     /**
-     * get the statr time
+     * get the start time
      * @return
      */
     public long getStartTime() {

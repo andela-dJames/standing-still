@@ -1,9 +1,13 @@
 package com.andela.standingstill.activity;
 
+import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,11 +57,13 @@ public class RecordActivity extends AppCompatActivity implements DatePickerDialo
         collapsingToolBar.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getMovements();
         initializeComponents();
     }
 
+    /**
+     * Initialize components
+     */
     public void initializeComponents() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView = (RecyclerView) findViewById(R.id.activity_items);
@@ -70,6 +76,9 @@ public class RecordActivity extends AppCompatActivity implements DatePickerDialo
 
     }
 
+    /**
+     * Get movements by date
+     */
     public void getMovements() {
         movements = new ArrayList<>();
         SqliteDBHelper helper = new SqliteDBHelper(this);
@@ -84,6 +93,7 @@ public class RecordActivity extends AppCompatActivity implements DatePickerDialo
         return true;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -103,7 +113,18 @@ public class RecordActivity extends AppCompatActivity implements DatePickerDialo
             fragment.setListener(this);
 
             fragment.show(getFragmentManager(), "dialogpicker");
+        }
 
+        if (id == android.R.id.home){
+            Intent upIntent = NavUtils.getParentActivityIntent(this);
+            if (NavUtils.shouldUpRecreateTask(this, upIntent)){
+                TaskStackBuilder.create(this)
+                        .addNextIntentWithParentStack(upIntent)
+                        .startActivities();
+            }
+            else {
+                NavUtils.navigateUpTo(this, upIntent);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -138,6 +159,11 @@ public class RecordActivity extends AppCompatActivity implements DatePickerDialo
 
     }
 
+    /**
+     * Return the index of an element in an array
+     * @param movement
+     * @return the index
+     */
     private int findIndex(Movement movement) {
         for (int i = 0; i < movements.size()-1; i++) {
             if (movement.getID() == (movements.get(i).getID())){
@@ -147,4 +173,9 @@ public class RecordActivity extends AppCompatActivity implements DatePickerDialo
         return -1;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishActivity(1);
+    }
 }

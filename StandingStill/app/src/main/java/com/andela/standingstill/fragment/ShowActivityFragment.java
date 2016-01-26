@@ -78,7 +78,7 @@ public class ShowActivityFragment extends Fragment implements DatePickerDialog.O
         date = new DateTime();
         place = new Place();
         movements = new ArrayList<>();
-       helper = new SqliteDBHelper(getContext());
+        helper = new SqliteDBHelper(getContext());
         access = new DataAccess(helper);
         movements = access.getByDate(date, null);
         places = place.getPlaces(movements);
